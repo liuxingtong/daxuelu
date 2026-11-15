@@ -12,9 +12,10 @@
 
 | 路径 | 说明 |
 |---|---|
-| `index.html` | 部署到 GitHub Pages 的紧凑网页版 |
+| `index.html` | 部署到 GitHub Pages 的完整网页版（含参数、装置状态、事件记录） |
 | `output/street-agent-lab/` | 完整源码、测试、设计说明 |
 | `街道智能体_四维筛选_合并版_v2026.10.08/` | 前期案例筛选参考页 |
+| `embed.html` | 可选的紧凑嵌入版（适合 iframe/小窗口） |
 | `.nojekyll` | 关闭 Jekyll，直接发布静态文件 |
 
 
@@ -32,11 +33,11 @@
 ```bash
 cd output/street-agent-lab
 python3 build.py          # 完整版 index.html
-python3 build_embed.py    # 紧凑版 index-embed.html
+python3 build_embed.py    # 紧凑版 index-embed.html（可选）
 node --test tests/*.test.mjs
 ```
 
-根目录的 `index.html` 由 `output/street-agent-lab/index-embed.html` 复制而来。完整版运行说明、参数和公式见 [`output/street-agent-lab/README.md`](output/street-agent-lab/README.md)。
+根目录的 `index.html` 由 `output/street-agent-lab/index.html`（完整版）复制而来；`embed.html` 来自紧凑版 `index-embed.html`。完整版运行说明、参数和公式见 [`output/street-agent-lab/README.md`](output/street-agent-lab/README.md)。
 
 ## 飞书个人文档
 
