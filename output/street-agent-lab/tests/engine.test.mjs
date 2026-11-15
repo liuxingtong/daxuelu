@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {pointInPoly,shortestPath,makeNetwork,allowedGround,heatCapacity,assignDemand,planGroundPath,stepRobot,railRoute,advanceRail,layoutMetrics,demandsFromPeople} from '../engine.mjs';
+const rect=(a,b,c,d)=>[[a,b],[c,b],[c,d],[a,d]];
+const site={bounds:[0,0,40,30],road:[rect(0,12,40,18)],walk:[rect(0,4,40,12),rect(0,18,40,26)],buildings:[],obstacles:[],trees:[]};
+test('polygon containment separates outside and inside',()=>{assert.equal(pointInPoly([5,5],rect(0,0,10,10)),true);assert.equal(pointInPoly([12,5],rect(0,0,10,10)),false)});
+test('route follows network length rather than Euclidean shortcut',()=>{const n={nodes:[[0,0],[10,0],[10,10]],edges:[[0,1],[1,2]]};const r=shortestPath(n,0,2);assert.equal(r.distance,20);assert.deepEqual(r.ids,[0,1,2]);});
+test('disconnected network is unreachable',()=>{assert.equal(shortestPath({nodes:[[0,0],[1,0]],edges:[]},0,1),null)});
+test('weekday excludes carriageway while market permits it',()=>{assert.equal(allowedGround(site,[20,15],'weekday',0),false);assert.equal(allowedGround(site,[20,15],'market',0),true);assert.equal(allowedGround(site,[20,6],'weekday',0),true)});
+test('ground route detours around obstacle instead of crossing it',()=>{const s={...site,obstacles:[rect(17,4,23,10)]};const r=planGroundPath(s,[10,7],[30,7],'weekday',0.35);assert.ok(r.length>0);assert.ok(r.some(p=>p[1]>10));assert.ok(r.every(p=>allowedGround(s,p,'weekday',0.35)));});
+test('power and individual demand cap service count',()=>{assert.equal(heatCapacity(600,.5,100,8),3);assert.equal(heatCapacity(0,.5,100,8),0);});
+test('assignment uses an agent only once and favours urgent demand',()=>{const a=[{id:'a',pos:[0,0]},{id:'b',pos:[10,0]}];const d=[{id:'low',pos:[0,0],priority:1},{id:'high',pos:[0,0],priority:10},{id:'third',pos:[9,0],priority:1}];const r=assignDemand(a,d,(a,d)=>Math.hypot(a.pos[0]-d.pos[0],a.pos[1]-d.pos[1]));assert.equal(r.length,2);assert.equal(new Set(r.map(x=>x.agent.id)).size,2);assert.equal(r[0].demand.id,'high');});
+test('empty demand never dispatches an agent',()=>{assert.deepEqual(assignDemand([{id:'a',pos:[0,0]}],[],()=>0),[])});
+test('occupied robot stays stationary even if target changes',()=>{const r={pos:[4,4],state:'serving',occupied:true,path:[[10,4]],progress:1};const n=stepRobot(r,1,{speed:1,inflateTime:4});assert.deepEqual(n.pos,[4,4]);assert.equal(n.state,'serving');});
+test('network has no unconnected crossovers or arbitrary planar movement',()=>{const n=makeNetwork('ladder',site,3);assert.ok(n.nodes.length>0);assert.ok(n.edges.length>0);const r=shortestPath(n,0,n.nodes.length-1);assert.ok(r&&Number.isFinite(r.distance));});
+test('straight-through rail nodes do not count as transfer turns',()=>{const n={nodes:[[0,0],[5,0],[10,0],[10,10]],edges:[[0,1],[1,2],[2,3]]};const r=railRoute(n,[0,0],[10,10]);assert.equal(r.distance,20);assert.equal(r.points.length,3);});
+test('thermal ring pauses at a real turn before continuing',()=>{let h={pos:[0,0],path:[[1,0],[1,1]],cornerWait:0};h=advanceRail(h,1,1,2);assert.deepEqual(h.pos,[1,0]);h=advanceRail(h,1,1,2);assert.deepEqual(h.pos,[1,0]);assert.ok(h.cornerWait>0);});
+test('track component with no ring is not counted as reachable coverage',()=>{const m=layoutMetrics(site,makeNetwork('sides',site,3),1,4,1,'market');assert.ok(m.coverage<.5);assert.ok(m.samples.filter(s=>s.covered).every(s=>Number.isFinite(s.time)));});
+
+test('social willingness is carried into demand and raises its priority',()=>{const p={dwell:8,cluster:5,socialPull:.6};const d=demandsFromPeople([{id:'a',pos:[0,0],stay:9,triggerAfter:8,social:.1,needPriority:0},{id:'b',pos:[20,0],stay:9,triggerAfter:8,social:.9,needPriority:0}],p);const low=d.find(x=>x.ids.includes('a')),high=d.find(x=>x.ids.includes('b'));assert.ok(high.social>low.social);assert.ok(high.priority>low.priority);});

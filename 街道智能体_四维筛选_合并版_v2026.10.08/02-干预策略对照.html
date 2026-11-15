@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>干预措施 × 案例对照</title>
+<style>
+:root{--bg:#fff;--soft:#f6f7f9;--line:#e3e6ea;--ink:#1c2024;--ink2:#5b6470;--ink3:#8b95a1;
+--blue:#185fa5;--blue50:#e6f1fb;--blue800:#0c447c;
+--teal:#0f6e56;--teal50:#e1f5ee;--teal800:#085041;
+--amber:#854f0b;--amber50:#faeeda;--amberline:#ba7515;
+--purple:#534ab7;--purple50:#eeedfe;--purple800:#26215c;
+--coral:#993c1d;--coral50:#faece7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.7;
+font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",-apple-system,"Segoe UI",sans-serif}
+header{padding:18px 24px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;
+background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:20}
+h1{margin:0 0 3px;font-size:18px;font-weight:600}
+.sub{color:var(--ink3);font-size:12.5px}
+.bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:11px}
+.bar input[type=search]{flex:0 1 250px;padding:6px 11px;border:1px solid var(--line);
+border-radius:8px;font-size:13px;font-family:inherit;outline:none}
+.bar input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue50)}
+.bar button{padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:12.5px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.bar button:hover{border-color:var(--blue);color:var(--blue);background:var(--blue50)}
+.bar button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.stat{margin-left:auto;font-size:12.5px;color:var(--ink3)}
+.stat b{color:var(--blue);font-size:15px;font-weight:600}
+main{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 132px);overflow:hidden}
+aside{border-right:1px solid var(--line);overflow-y:auto;padding:10px 8px 70px}
+section{overflow-y:auto;padding:20px 26px 80px}
+.phead{display:flex;align-items:center;gap:8px;padding:7px 9px;font-size:12.5px;font-weight:600;
+cursor:pointer;border-radius:8px;margin-top:4px}
+.phead:hover{background:var(--soft)}
+.phead .tri{font-size:10px;color:var(--ink3);transition:transform .15s}
+.po.open .phead .tri{transform:rotate(90deg)}
+.phead .pn{margin-left:auto;font-weight:400;color:var(--ink3);font-size:11.5px}
+.po.P .phead{color:var(--blue800)} .po.B .phead{color:var(--teal800)}
+.po.C .phead{color:var(--coral)} .po.D .phead{color:var(--purple800)}
+.pbody{display:none;padding-left:8px}
+.po.open .pbody{display:block}
+.ghead{display:flex;align-items:center;gap:6px;padding:5px 9px;font-size:12.5px;
+color:var(--ink2);font-weight:600;border-radius:7px;margin-top:2px}
+.ghead .gn{margin-left:auto;font-weight:400;color:var(--ink3);font-size:11.5px}
+.m{padding:4px 9px 4px 20px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink2);
+display:flex;align-items:center;gap:6px;border-left:2px solid transparent}
+.m:hover{background:var(--soft)}
+.m.sel{background:var(--blue50);color:var(--blue800);border-left-color:var(--blue)}
+.m .n{margin-left:auto;font-size:11px;color:var(--ink3);flex:none}
+.m.zero{color:var(--ink3)}
+.m.zero .n{color:var(--amberline)}
+.m .c{width:6px;height:6px;border-radius:50%;background:var(--teal);flex:none}
+.m.zero .c{background:#e3e6ea}
+.card{max-width:900px}
+.chead{padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.chead h2{margin:0;font-size:19px;font-weight:600;color:var(--blue800)}
+.chead .meta{font-size:12px;color:var(--ink3);margin-top:2px}
+h3{font-size:13px;font-weight:600;margin:18px 0 7px;color:var(--ink2)}
+.box{background:var(--soft);border-radius:10px;padding:11px 14px;margin:0 0 10px;font-size:13px}
+.box.hl{background:var(--blue50)} .box.warn{background:var(--amber50);color:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:0 0 8px}
+th{background:var(--soft);text-align:left;font-weight:600;padding:6px 9px;border:1px solid var(--line);
+font-size:12px;color:var(--ink2)}
+td{padding:6px 9px;border:1px solid var(--line);vertical-align:top}
+.cc{border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:0 0 9px;background:#fff}
+.cc .t{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;margin-bottom:3px}
+.cc .t b{font-size:13.5px;color:var(--blue800)}
+.cc .t span{font-size:11.5px;color:var(--ink3)}
+.cc .tag{display:inline-block;font-size:11px;border-radius:10px;padding:0 7px;
+border:1px solid var(--line);color:var(--ink3);margin-right:4px}
+.cc .tag.s{background:var(--amber50);border-color:var(--amberline);color:var(--amber)}
+.cc a{color:var(--blue);text-decoration:none;border-bottom:1px dotted var(--blue);font-size:12px}
+.cc a:hover{border-bottom-style:solid}
+.cc .src{font-size:12px;color:var(--ink2);margin-top:6px;word-break:break-all}
+.cc .kv{margin-top:6px;font-size:12px;color:var(--ink2)}
+.cc .sum{font-size:12.5px;line-height:1.66;background:#fbfcfe;border-left:2px solid var(--blue);
+padding:7px 11px;margin:6px 0 2px;border-radius:0 7px 7px 0}
+.cc .sum.ensum{border-left-color:var(--teal);background:#f8fcfb;
+font-family:"Segoe UI",-apple-system,"Helvetica Neue",sans-serif;font-size:12px;line-height:1.62}
+.cc .lab{font-size:10.5px;color:var(--ink3);margin-top:6px}
+.m em,.ghead em,.phead em{font-style:normal;font-weight:400;font-size:11px;color:var(--ink3);margin-left:5px}
+.m .lb{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+.m.sel em{color:var(--blue800);opacity:.75}
+.langs{display:flex;gap:0;margin-left:14px}
+.langs button{border-radius:0;padding:6px 9px;margin:0}
+.langs button:first-child{border-radius:8px 0 0 8px}
+.langs button:last-child{border-radius:0 8px 8px 0;border-left:none}
+.cc .kv i{color:var(--ink3);font-style:normal}
+.empty{color:var(--ink3);font-size:13px;padding:16px 0}
+.chips{margin:0 0 4px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="h1"></h1>
+  <div class="sub" id="hsub"></div>
+  <div class="bar">
+    <input type="search" id="q">
+    <button id="f-all" class="on"></button>
+    <button id="f-has"></button>
+    <button id="f-zero"></button>
+    <span class="langs">
+      <button data-lang="zh">中文</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="both" class="on">双语</button>
+    </span>
+    <span class="stat" id="stat"></span>
+  </div>
+</header>
+<main>
+  <aside id="tree"></aside>
+  <section id="panel"></section>
+</main>
+<script src="sm_data.js"></script>
+<script src="i18n.js"></script>
+<script>
+(function(){
+  var D = window.SM_DATA3 || {measures:[],cases:[]};
+  var I = window.SM_I18N || {pathEn:{},stressorEn:{}};
+  var M = D.measures, C = D.cases, S = D.stressors||[], MG = D.measureGroups||[];
+  var CIDX={}; C.forEach(function(c){CIDX[c.id]=c;});
+  var MIDX={}; M.forEach(function(m){MIDX[m.id]=m;});
+  var GIDX={}; MG.forEach(function(g){GIDX[g.id]=g;});
+  var SIDX={}; S.forEach(function(s){SIDX[s.id]=s;});
+  var cur=null, filter='all', lang='both';
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function urls(t){ return (t||'').match(/https?:\/\/[^\s｜]+/g) || []; }
+  function dual(zh,en){
+    zh=zh||''; en=en||'';
+    if(lang==='zh') return esc(zh||en);
+    if(lang==='en') return esc(en||zh);
+    if(!en||en===zh) return esc(zh);
+    if(!zh) return esc(en);
+    return esc(zh)+'<em>'+esc(en)+'</em>';
+  }
+  function sn(sid){ return SIDX[sid]?SIDX[sid].name:sid; }
+  function snEn(sid){ return SIDX[sid]?(SIDX[sid].nameEn||''):''; }
+  function gname(gid){ return GIDX[gid]?GIDX[gid].name:gid; }
+  function gnameEn(gid){ return GIDX[gid]?(GIDX[gid].nameEn||''):''; }
+
+  // 结构
+  var paths=[];
+  M.forEach(function(m){
+    var p=paths.filter(function(x){return x.id===m.path;})[0];
+    if(!p){p={id:m.path,name:m.path_name,groups:[]};paths.push(p);}
+    var g=p.groups.filter(function(x){return x.id===m.group;})[0];
+    if(!g){g={id:m.group,name:m.group_name,items:[]};p.groups.push(g);}
+    g.items.push(m);
+  });
+  var totalM=M.length, hasM=M.filter(function(m){return m.n_case>0;}).length;
+
+  function renderTree(){
+    var q=document.getElementById('q').value.trim().toLowerCase();
+    var html='';
+    paths.forEach(function(p){
+      var pg=p.groups.map(function(g){
+        var items=g.items.filter(function(m){
+          if(filter==='has'&&m.n_case===0) return false;
+          if(filter==='zero'&&m.n_case>0) return false;
+          if(q){
+            var hay=(m.name+' '+(m.nameEn||'')+' '+(m.desc||'')+' '+(m.descEn||'')+' '+
+              gname(m.group)+' '+(m.cases||[]).map(function(id){
+              return CIDX[id]?CIDX[id].name+' '+(CIDX[id].nameEn||''):'';}).join(' ')).toLowerCase();
+            if(hay.indexOf(q)<0) return false;
+          }
+          return true;
+        });
+        return {g:g,items:items};
+      }).filter(function(x){return x.items.length;});
+      if(!pg.length) return;
+      var n=p.groups.reduce(function(a,g){return a+g.items.length;},0);
+      html+='<div class="po '+p.id+' open">';
+      html+='<div class="phead"><span class="tri">▶</span>'+
+            dual(p.name, I.pathEn[p.id]||'')+
+            '<span class="pn">'+n+(lang==='en'?'':' 条')+'</span></div><div class="pbody">';
+      pg.forEach(function(x){
+        html+='<div class="ghead">'+dual(gname(x.g.id),gnameEn(x.g.id))+
+              '<span class="gn">'+x.items.length+(lang==='en'?'':' 条')+'</span></div>';
+        x.items.forEach(function(m){
+          html+='<div class="m'+(m.n_case?'':' zero')+(cur&&cur.id===m.id?' sel':'')+
+                '" data-id="'+m.id+'"><span class="c"></span>'+
+                '<span class="lb">'+dual(m.name,m.nameEn)+'</span>'+
+                '<span class="n">'+m.n_case+'</span></div>';
+        });
+      });
+      html+='</div></div>';
+    });
+    document.getElementById('tree').innerHTML = html ||
+      '<div class="empty">'+(lang==='en'?'No matching measures':'没有匹配的措施')+'</div>';
+  }
+
+  function caseCard(c){
+    var h='<div class="cc"><div class="t"><b>'+dual(c.name,c.nameEn)+'</b>'+
+      '<span>'+esc([c.dim,c.region,c.year,c.owner].filter(Boolean).join(' · '))+'</span></div>';
+    if(c.stressors && c.stressors.length){
+      h+='<div class="chips">'+c.stressors.map(function(s){
+        return '<span class="tag s">'+dual(sn(s),snEn(s))+'</span>';}).join('')+'</div>';
+    } else {
+      h+='<div class="chips"><span class="tag">'+(lang==='en'
+        ? 'no stressor tagged (indirectly related)':'未标注胁迫因子（间接相关）')+'</span></div>';
+    }
+    if(lang!=='en' && c.summary) h+='<div class="sum">'+esc(c.summary)+'</div>';
+    if(lang==='both' && c.summaryEn) h+='<div class="lab">EN</div>';
+    if(lang!=='zh' && c.summaryEn) h+='<div class="sum ensum">'+esc(c.summaryEn)+'</div>';
+    if(c.kv && c.kv.length){
+      h+='<div class="kv">';
+      c.kv.slice(0,5).forEach(function(r){
+        h+='<div><i>'+esc(r[0])+'</i>　<b>'+esc(r[1])+'</b>'+
+           (r[2]?'　'+esc(r[2]):'')+'</div>';
+      });
+      h+='</div>';
+    }
+    var u=urls(c.srclink||'');
+    if(u.length){
+      h+='<div class="src">'+(lang==='en'?'Source: ':'来源：')+u.slice(0,3).map(function(x,i){
+        return '<a href="'+esc(x)+'" target="_blank" rel="noopener">'+
+          (lang==='en'?'Link ':'链接 ')+(i+1)+'</a>';}).join(' · ');
+      if(u.length>3) h+='　'+(lang==='en'?'('+u.length+' total)':'（共 '+u.length+' 条）');
+      h+='</div>';
+    }
+    return h+'</div>';
+  }
+
+  function renderPanel(){
+    var p=document.getElementById('panel');
+    if(!cur){
+      var rows=paths.map(function(pp){
+        var n=pp.groups.reduce(function(a,g){return a+g.items.length;},0);
+        var h=pp.groups.reduce(function(a,g){return a+g.items.filter(function(m){
+          return m.n_case>0;}).length;},0);
+        var cset={};
+        pp.groups.forEach(function(g){g.items.forEach(function(m){
+          m.cases.forEach(function(id){cset[id]=1;});});});
+        return '<tr><td>'+dual(pp.name, I.pathEn[pp.id]||'')+'</td><td>'+n+'</td><td>'+h+
+               '</td><td>'+Object.keys(cset).length+'</td></tr>';
+      }).join('');
+      var th = lang==='en'
+        ? '<tr><th>Path</th><th>Measures</th><th>With cases</th><th>Cases touched</th></tr>'
+        : '<tr><th>路径</th><th>措施数</th><th>有案例</th><th>涉及案例</th></tr>';
+      p.innerHTML='<div class="card"><div class="chead"><h2>'+
+        (lang==='en'?'Reading this material by intervention measure':'按干预措施看这份资料')+'</h2>'+
+        '<div class="meta">'+(lang==='en'
+          ? 'A measure is something you can do. Stressors are the problem, environmental factors are the variables — only measures are actions, so entering through measures shows fastest whether there is anything to work with.'
+          : '措施 = 能做的事。胁迫因子是「问题」，环境因子是「变量」，只有措施是「动作」，所以从措施进来最容易看清有没有货。')+
+        '</div></div>'+
+        '<div class="box hl">'+(lang==='en'
+          ? '<b>'+totalM+'</b> measures, of which <b>'+hasM+'</b> are backed by cases and <b>'+(totalM-hasM)+'</b> ('+Math.round(100*(totalM-hasM)/totalM)+'%) are currently empty. Empty is not necessarily bad — it may mean nobody has done it, or nobody has made it work. Use “Gaps only” to filter them out.'
+          : '<b>'+totalM+'</b> 条措施中，<b>'+hasM+'</b> 条有案例支撑，<b>'+(totalM-hasM)+'</b> 条（'+Math.round(100*(totalM-hasM)/totalM)+'%）目前是空的。空的不一定是坏事 —— 它可能是还没人做，也可能是没人做成。点「只看缺口」能筛出来。')+
+        '</div>'+
+        '<h3>'+(lang==='en'?'Coverage of the four paths':'四条路径的覆盖情况')+'</h3>'+
+        '<table><thead>'+th+'</thead><tbody>'+rows+'</tbody></table>'+
+        '<h3>'+(lang==='en'?'How to use this page':'怎么用这一页')+'</h3>'+
+        '<div class="box">'+(lang==='en'
+          ? '① Click any measure on the left; the right panel lists every case that uses it, with data and source links.<br>② The “applicable stressors” for each measure are reverse-inferred from cases, not hand-assigned.<br>③ Click “Gaps only” to surface directions nobody has taken — precisely the opportunity for this course.'
+          : '① 点左侧任一措施，右侧列出所有用到它的案例，带数据与来源链接；<br>② 每条措施的「适用胁迫因子」是从案例反推的，不是手工指派的；<br>③ 点「只看缺口」，出来的就是没人做的方向 —— 正是课程的选题机会。')+
+        '</div></div>';
+      return;
+    }
+    var m=cur;
+    var grp=GIDX[m.group];
+    var h='<div class="card"><div class="chead"><h2>'+dual(m.name,m.nameEn)+'</h2>'+
+      '<div class="meta">'+dual(m.path_name,I.pathEn[m.path]||'')+' › '+
+      dual(grp?grp.name:m.group_name,grp?grp.nameEn:'')+
+      '　·　'+(lang==='en'?'Space Matrix ch. ':'空间矩阵第 ')+esc(m.chapter)+
+      (lang==='en'?'　·　'+m.n_case+' cases':' 章　·　'+m.n_case+' 个案例')+'</div></div>';
+    if(m.desc||m.descEn) h+='<div class="box">'+dual(m.desc,m.descEn)+'</div>';
+    if(m.stressors && m.stressors.length){
+      h+='<h3>'+(lang==='en'?'Applicable stressors (reverse-inferred from cases)':'适用胁迫因子（由案例反推）')+
+        '</h3><div class="chips">'+
+        m.stressors.map(function(x){return '<span class="tag s">'+dual(sn(x[0]),snEn(x[0]))+
+          ' ×'+x[1]+'</span>';}).join('')+'</div>';
+    } else {
+      h+='<div class="box warn">'+(lang==='en'
+        ? 'No case is attached to this measure yet, so no applicable stressors can be inferred. If it should work in theory, this is a gap.'
+        : '这条措施目前没有案例挂载，所以推不出适用胁迫因子。如果它理论上应该有用，那这里就是缺口。')+'</div>';
+    }
+    h+='<h3>'+(lang==='en'?'Cases using this measure ('+m.n_case+')'
+      :'用到这条措施的案例（'+m.n_case+'）')+'</h3>';
+    if(m.n_case){ m.cases.forEach(function(id){ if(CIDX[id]) h+=caseCard(CIDX[id]); }); }
+    else { h+='<div class="empty">'+(lang==='en'?'No cases yet.':'暂无案例。')+'</div>'; }
+    h+='</div>';
+    p.innerHTML=h;
+  }
+
+  function renderChrome(){
+    document.getElementById('h1').innerHTML=dual('干预措施 × 案例对照','Intervention Measures × Cases');
+    document.getElementById('hsub').innerHTML=lang==='en'
+      ? 'This is the <b>measure dictionary</b> (116 entries, organised under 4 paths / 36 groups), for looking up what each measure is and who has used it.<br><b>For filtering, use the Three-Dimensional Filter page</b> — only the 36 measure groups (shading, greening…) are filterable there; these sub-items are not.'
+      : '这是<b>措施细分明细字典</b>（116 条，按 4 条路径 / 36 个大类组织），用于查看「每条措施是什么、被谁用过」。<br><b>筛选请用「三维筛选」页</b> —— 那里可筛的是 36 个措施大类（遮阳、绿化…），这些细分不作为筛选项。';
+    document.getElementById('f-all').innerHTML=dual('全部','All');
+    document.getElementById('f-has').innerHTML=dual('只看有案例','With cases');
+    document.getElementById('f-zero').innerHTML=dual('只看缺口','Gaps only');
+    document.getElementById('q').placeholder=lang==='en'
+      ? 'Search measure or case, e.g. shading / misting / Daxue Road'
+      : '搜索措施或案例，如 遮阳 / 雾化 / 大学路';
+    document.getElementById('stat').innerHTML=(lang==='en'?'measures ':'措施 ')+
+      '<b>'+totalM+'</b>'+(lang==='en'?' ｜ cases ':' 条 ｜ 案例 ')+'<b>'+C.length+'</b>'+
+      (lang==='en'?'':' 个');
+  }
+
+  function renderAll(){ renderChrome(); renderTree(); renderPanel(); }
+
+  document.getElementById('tree').addEventListener('click',function(e){
+    var it=e.target.closest('.m');
+    if(it){ cur=MIDX[it.getAttribute('data-id')]; renderAll();
+      document.getElementById('panel').scrollTop=0; return; }
+    var ph=e.target.closest('.phead');
+    if(ph){ ph.parentNode.classList.toggle('open'); }
+  });
+  document.getElementById('q').addEventListener('input',renderTree);
+  function setF(f){ filter=f;
+    ['all','has','zero'].forEach(function(k){
+      document.getElementById('f-'+k).classList.toggle('on', k===f); });
+    renderTree(); }
+  document.getElementById('f-all').onclick=function(){setF('all');};
+  document.getElementById('f-has').onclick=function(){setF('has');};
+  document.getElementById('f-zero').onclick=function(){setF('zero');};
+
+  Array.prototype.forEach.call(document.querySelectorAll('.langs button'),function(b){
+    b.onclick=function(){
+      lang=b.getAttribute('data-lang');
+      Array.prototype.forEach.call(document.querySelectorAll('.langs button'),function(x){
+        x.classList.toggle('on', x===b); });
+      renderAll();
+    };
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

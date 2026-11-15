@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基础环境因子 · 扩充清单（核对稿）</title>
+<style>
+:root{--bg:#fff;--soft:#f6f7f9;--line:#e3e6ea;--ink:#1c2024;--ink2:#5b6470;--ink3:#8b95a1;
+--blue:#185fa5;--blue50:#e6f1fb;--blue800:#0c447c;
+--teal:#0f6e56;--teal50:#e1f5ee;--teal800:#085041;
+--amber:#854f0b;--amber50:#faeeda;--amberline:#ba7515}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.7;
+font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",-apple-system,"Segoe UI",sans-serif}
+header{padding:26px 30px 16px;border-bottom:1px solid var(--line)}
+h1{margin:0 0 8px;font-size:20px;font-weight:600}
+.sub{color:var(--ink3);font-size:12.5px}
+.stat{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px}
+.stat div{background:var(--soft);border-radius:8px;padding:8px 14px;font-size:12.5px;color:var(--ink2)}
+.stat b{font-size:16px;color:var(--blue);font-weight:600;margin-right:4px}
+main{padding:20px 30px 80px;max-width:1240px;margin:0 auto}
+.legend{background:var(--amber50);border:1px solid var(--amberline);border-radius:10px;
+padding:12px 16px;color:var(--amber);font-size:12.5px;margin:0 0 24px}
+.legend b{font-weight:600}
+h2{font-size:15px;font-weight:600;margin:30px 0 12px;padding-left:11px;border-left:3px solid var(--blue)}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 12px;background:#fff}
+.card.physical{border-left:3px solid var(--blue)}
+.card.experiential{border-left:3px solid var(--teal)}
+.chead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.gid{font-family:Consolas,monospace;font-size:12px;color:#fff;background:var(--blue);
+border-radius:5px;padding:1px 7px}
+.card.experiential .gid{background:var(--teal)}
+.gzh{font-size:14.5px;font-weight:600;color:var(--blue800)}
+.card.experiential .gzh{color:var(--teal800)}
+.gen{font-size:12px;color:var(--ink3)}
+.badge{font-size:11.5px;border-radius:20px;padding:1px 9px;background:var(--teal50);
+color:var(--teal800);border:1px solid var(--teal)}
+.cnt{margin-left:auto;font-size:12px;color:var(--ink3)}
+.unmark{color:var(--amber)}
+.gnote{font-size:12.5px;color:var(--ink2);margin:0 0 10px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--soft);border:1px solid var(--line);border-radius:6px;
+padding:2px 9px;font-size:12.5px;color:var(--ink2)}
+.chip.un{background:var(--amber50);border-color:var(--amberline);color:var(--amber)}
+.sep{width:100%;font-size:12px;color:var(--ink3);margin:6px 0 2px;font-weight:600}
+body.onlyun .chip:not(.un){display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>基础环境因子 · 扩充清单（核对稿）</h1>
+  <div class="sub">《街道智能体 —— 面向气候响应的人因交互空间设计研究》（闫超）｜ Space Matrix 空间矩阵 ｜ 供核对，未定稿</div>
+  <div class="stat">
+    <div><b>8</b>个物理层面大类</div>
+    <div><b>13</b>个体验层面大类</div>
+    <div><b>294</b>项小类</div>
+    <div><b>81</b>项非常规 / 新增</div>
+  </div>
+</header>
+<main>
+  <div class="legend">
+    <b>怎么读这份清单：</b>每个<b>大类</b>可作筛选条件（第一轮的选项）；<b>小类</b>只作为示意参考展示，
+    不单独作筛选条件——它太细，做成筛选项会让面板失控。<br>
+    带 <b>★</b> 的是头脑风暴新增的非常规 / 实验性条目，<b>需要你逐条判断是否保留</b>；
+    其中 P7 生物与生态过程、P8 能量与资源流、E12 多感官协同、E13 健康与人群适应 是本次新增大类。<br>
+    多数非常规条目已注明关键实测量级，可据此判断可用性。
+    <label style="margin-left:14px;user-select:none">
+      <input type="checkbox" id="onlyun" style="vertical-align:-1px"> 只看非常规条目
+    </label>
+  </div>
+  <h2>物理层面 physical</h2>
+  
+<div class="card physical" data-un="3">
+  <div class="chead">
+    <span class="gid">P1</span>
+    <span class="gzh">气象与辐射参数</span>
+    <span class="gen">Meteorological & Radiative</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">31 项小类　·　<span class="unmark">其中 ★ 非常规 3 项</span></span>
+  </div>
+  <div class="gnote">可测的物理量本体，是全部量化指标的基础</div>
+  <div class="chips"><span class="chip">气温 Ta</span><span class="chip">平均辐射温度 Tmrt</span><span class="chip">铺装与构筑表面温度 Ts</span><span class="chip">湿球黑球温度 WBGT</span><span class="chip">相对湿度 RH</span><span class="chip">水汽压与露点</span><span class="chip">蒸发通量</span><span class="chip">风速 v</span><span class="chip">风向 θ</span><span class="chip">阵风因子与湍流强度</span><span class="chip">风压 p</span><span class="chip">直射辐射 Ib</span><span class="chip">散射辐射 Id</span><span class="chip">反射辐射 Ir</span><span class="chip">太阳高度角与方位角</span><span class="chip">长波辐射收支</span><span class="chip">连续曝晒时长</span><span class="chip">遮荫份额</span><span class="chip">降雨强度</span><span class="chip">降雨累积量</span><span class="chip">径流系数</span><span class="chip">下渗率</span><span class="chip">积水深与退水时间</span><span class="chip">PM2.5 / PM10</span><span class="chip">NOx / O3 / CO2</span><span class="chip">空气龄与滞留时间</span><span class="chip">等效声级 LAeq</span><span class="chip">大气压</span><span class="chip un" title="非常规 / 实验性" >地面振动</span><span class="chip un" title="非常规 / 实验性" >静电场与静电积累</span><span class="chip un" title="非常规 / 实验性" >电离辐射与氡</span></div>
+</div>
+<div class="card physical" data-un="1">
+  <div class="chead">
+    <span class="gid">P2</span>
+    <span class="gzh">空间几何与形态</span>
+    <span class="gen">Spatial Geometry & Morphology</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">21 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">街道断面的比例关系，决定风、光、热的分配</div>
+  <div class="chips"><span class="chip">街道总宽与红线</span><span class="chip">车行道宽与车道数</span><span class="chip">人行道净宽</span><span class="chip">设施带与绿化带</span><span class="chip">建筑退界与骑楼进深</span><span class="chip">路缘石高差与缘石坡</span><span class="chip">街道高宽比 AR</span><span class="chip">街道走向与盛行风夹角</span><span class="chip">街道走向与正午太阳方位</span><span class="chip">街段长度与长宽比</span><span class="chip">贴线率与界面连续度</span><span class="chip">建筑高度轮廓梯度</span><span class="chip">遮挡仰角与遮挡半角</span><span class="chip">天空视角因子 SVF</span><span class="chip">立面出挑深度</span><span class="chip">三维空间类型（峡谷 / 广场 / 骑楼 / 冷巷 / 天井 / 下沉 / 架空）</span><span class="chip">空间序列开合节奏</span><span class="chip">交叉口形式</span><span class="chip">转角切角与倒角</span><span class="chip">竖向与地下关系</span><span class="chip un" title="非常规 / 实验性" >冷巷截面比例（传统气候智慧）</span></div>
+</div>
+<div class="card physical" data-un="1">
+  <div class="chead">
+    <span class="gid">P3</span>
+    <span class="gzh">界面与边界</span>
+    <span class="gen">Interfaces & Boundaries</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">17 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">围合空间的三个界面，是干预最直接的着力点</div>
+  <div class="chips"><span class="chip">底界面铺装分区</span><span class="chip">地面坡向与排水路径</span><span class="chip">侧界面材质</span><span class="chip">柱廊与骑楼柱列</span><span class="chip">围墙、篱笆与绿篱</span><span class="chip">广告牌与灯箱</span><span class="chip">商业外摆界面</span><span class="chip">顶界面树冠层</span><span class="chip">雨棚与遮阳篷</span><span class="chip">膜结构天幕</span><span class="chip">连廊与天桥</span><span class="chip">可开合屋面</span><span class="chip">竖向透明风挡</span><span class="chip">导风板与可调百叶</span><span class="chip">声屏障</span><span class="chip">灰空间（檐下 / 廊下 / 树下 / 拱下）</span><span class="chip un" title="非常规 / 实验性" >半开敞通透墙</span></div>
+</div>
+<div class="card physical" data-un="23">
+  <div class="chead">
+    <span class="gid">P4</span>
+    <span class="gzh">材质与构造</span>
+    <span class="gen">Material & Construction</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">75 项小类　·　<span class="unmark">其中 ★ 非常规 23 项</span></span>
+  </div>
+  <div class="gnote">同一形式换材料，物理表现可以完全不同；★多为智能响应材料</div>
+  <div class="chips"><div class="sep">铺装族</div><span class="chip">沥青</span><span class="chip">混凝土与水泥砖</span><span class="chip">天然石材</span><span class="chip">烧结砖与陶土砖</span><span class="chip">透水砖与植草砖</span><span class="chip">木材与防腐木</span><span class="chip">树脂与橡胶</span><span class="chip">金属格栅与锈钢</span><div class="sep">热工与光学性能</div><span class="chip">太阳反射率 albedo</span><span class="chip">半球发射率 ε</span><span class="chip">比热容与蓄热系数</span><span class="chip">导热系数与热惰性指标</span><span class="chip">相变温度与相变潜热</span><span class="chip">表面粗糙度</span><span class="chip">透水率与保水率</span><span class="chip un" title="非常规 / 实验性" >吸湿与放湿特性</span><div class="sep">表面处理与涂层</div><span class="chip">冷涂料与热反射涂层</span><span class="chip">逆反射涂层</span><span class="chip">光催化 TiO2 涂层</span><span class="chip">自清洁与耐磨涂层</span><span class="chip">蓄水保水涂层</span><span class="chip">温致变色涂层</span><span class="chip un" title="非常规 / 实验性" >超疏水与自清洁表面</span><div class="sep">智能响应材料</div><span class="chip un" title="非常规 / 实验性" >被动辐射制冷涂层（反射 97% 太阳能，表面约 −5.3 ℃）</span><span class="chip un" title="非常规 / 实验性" >吸水凝胶膜（夜间吸湿、白天蒸发，直射下约 −7 ℃）</span><span class="chip un" title="非常规 / 实验性" >形状记忆合金 SMA 与形状记忆聚合物 SMP</span><span class="chip un" title="非常规 / 实验性" >电致变色玻璃（−15~70 ℃，切换 0.2 s）</span><span class="chip un" title="非常规 / 实验性" >热致变色与光致变色材料</span><span class="chip un" title="非常规 / 实验性" >气凝胶隔热层</span><span class="chip un" title="非常规 / 实验性" >自修复混凝土（微生物胶囊，寿命 +30~40%）</span><span class="chip un" title="非常规 / 实验性" >自感知水泥基复合材料</span><span class="chip un" title="非常规 / 实验性" >压电材料（振动发电兼结构监测）</span><span class="chip un" title="非常规 / 实验性" >导电纳米复合材料</span><span class="chip un" title="非常规 / 实验性" >多功能地质聚合物（赤泥 / 粉煤灰基）</span><span class="chip un" title="非常规 / 实验性" >相变微胶囊砂浆</span><div class="sep">膜材与织物</div><span class="chip">PTFE 膜材</span><span class="chip">ETFE 气枕膜</span><span class="chip">PVC 涂层聚酯织物</span><span class="chip">遮阳布与可调百叶</span><span class="chip">GFRP 包板</span><div class="sep">玻璃与窗构件</div><span class="chip">透光率与 Low-E 镀膜</span><span class="chip">丝印与点彩渐变</span><span class="chip">竖向翻板遮阳</span><span class="chip">季节性得热平衡</span><div class="sep">植物材料</div><span class="chip">乔木冠幅与冠层密度</span><span class="chip">叶面积指数 LAI</span><span class="chip">落叶或常绿</span><span class="chip">蒸腾速率</span><span class="chip">枝下高</span><span class="chip">灌木与绿篱</span><span class="chip">草本与地被</span><span class="chip">藤本与垂直绿化</span><span class="chip">屋顶绿化</span><span class="chip">常绿针叶墙</span><span class="chip un" title="非常规 / 实验性" >低致敏植物选型（健康导向）</span><span class="chip un" title="非常规 / 实验性" >植物 BVOC 排放特征</span><span class="chip un" title="非常规 / 实验性" >秋色与落叶物候</span><div class="sep">水与雾材料</div><span class="chip">雾化喷嘴</span><span class="chip">湿帘与蒸发表面</span><span class="chip">浅水盘与镜面水</span><span class="chip">明沟与集水槽</span><span class="chip">雨水花园与生物滞留</span><span class="chip">水幕与跌水</span><span class="chip un" title="非常规 / 实验性" >雾收集网</span><span class="chip un" title="非常规 / 实验性" >露水凝结面</span><div class="sep">结构与连接</div><span class="chip">单元化模块与插拔接口</span><span class="chip">六铰链折叠臂与直臂系统</span><span class="chip">电动主轴与伺服电缸</span><span class="chip">快速拆装节点</span><span class="chip">轻质高强结构</span><span class="chip">抗风沙包板</span><div class="sep">数字与能量材料</div><span class="chip un" title="非常规 / 实验性" >光伏铺装与光伏膜</span><span class="chip un" title="非常规 / 实验性" >热电材料</span><span class="chip un" title="非常规 / 实验性" >电磁屏蔽与导电涂层</span><span class="chip un" title="非常规 / 实验性" >RFID 与近场标签</span></div>
+</div>
+<div class="card physical" data-un="1">
+  <div class="chead">
+    <span class="gid">P5</span>
+    <span class="gzh">构筑物与设施</span>
+    <span class="gen">Structures & Furniture</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">38 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">可产品化的街道单元，是课程最终要设计的东西</div>
+  <div class="chips"><div class="sep">坐憩</div><span class="chip">固定长椅</span><span class="chip">可移动座椅</span><span class="chip">可折叠与可堆叠</span><span class="chip">加热座椅（电加热 / 余热）</span><span class="chip">树池坐凳一体化</span><span class="chip">可坐挡墙与台阶</span><div class="sep">遮阳</div><span class="chip">固定遮阳（檐口 / 挑板 / 穿孔板 / 格栅）</span><span class="chip">可动遮阳（多轴伞 / 翻板 / 卷帘）</span><span class="chip">植物遮阳（行道树 / 棚架 / 藤廊）</span><span class="chip">移动遮阳（推车式 / 可回收）</span><div class="sep">风调控</div><span class="chip">透明风挡与防风屏</span><span class="chip">弧形防风屏障 + 导风板</span><span class="chip">风塔与捕风器</span><span class="chip">风幕与埋地送风</span><span class="chip">挡风檐与导风柱</span><div class="sep">雨水与水体</div><span class="chip">蓄水池与下沉运动场</span><span class="chip">渗透沟与暗管</span><span class="chip">透水铺装与蓄水模块</span><span class="chip">明沟与溢流口</span><span class="chip">雨水回用系统</span><div class="sep">照明</div><span class="chip">高杆灯与庭院灯</span><span class="chip">埋地灯与发光铺装单元</span><span class="chip">可调光控制</span><span class="chip">亮光墙面（冬季光照补偿）</span><div class="sep">空气与舒适</div><span class="chip">雾化降温阵列</span><span class="chip">空气净化塔与过滤风塔</span><span class="chip">喷泉与跌水</span><span class="chip">遮阳 + 雾 + 风一体化遮篷</span><span class="chip un" title="非常规 / 实验性" >热庇护所 heat refuge</span><div class="sep">信息</div><span class="chip">传感节点（气象 / 超声 / 雷达 / 热像 / 摄像）</span><span class="chip">显示与投影界面</span><span class="chip">地面导引标识</span><span class="chip">遮荫地图与最凉路径导视牌</span><div class="sep">商业与服务</div><span class="chip">外摆桌椅</span><span class="chip">外摆雨棚与透明风挡</span><span class="chip">共享单车停放单元</span><span class="chip">充电桩与便民服务点</span><span class="chip">垃圾与保洁设施</span></div>
+</div>
+<div class="card physical" data-un="0">
+  <div class="chead">
+    <span class="gid">P6</span>
+    <span class="gzh">尺度与模数</span>
+    <span class="gen">Scale & Module</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">9 项小类</span>
+  </div>
+  <div class="gnote">决定干预能落在什么颗粒度上</div>
+  <div class="chips"><span class="chip">人体尺度层级（近身 / 个人 / 社交 / 公共）</span><span class="chip">铺装单元模数</span><span class="chip">树池与种植池模数</span><span class="chip">座椅与家具模数</span><span class="chip">柱距模数</span><span class="chip">模块复用率与替换成本</span><span class="chip">停留层级（通过 / 短暂停留 / 驻留 / 久坐）</span><span class="chip">时间尺度（秒 / 分 / 时 / 日 / 季）</span><span class="chip">单元数量与覆盖（点 / 线 / 面 / 网）</span></div>
+</div>
+<div class="card physical" data-un="10">
+  <div class="chead">
+    <span class="gid">P7</span>
+    <span class="gzh">生物与生态过程</span>
+    <span class="gen">Bio-ecological Processes</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">10 项小类　·　<span class="unmark">其中 ★ 非常规 10 项</span></span>
+  </div>
+  <div class="gnote">★新增大类：把街道当生态系统看，是头脑风暴的产物</div>
+  <div class="chips"><span class="chip un" title="非常规 / 实验性" >花粉与致敏原</span><span class="chip un" title="非常规 / 实验性" >植物挥发性有机物 BVOC</span><span class="chip un" title="非常规 / 实验性" >土壤微生物与生物结皮</span><span class="chip un" title="非常规 / 实验性" >传粉昆虫与蝴蝶</span><span class="chip un" title="非常规 / 实验性" >鸟类与小型动物</span><span class="chip un" title="非常规 / 实验性" >生物指示物种</span><span class="chip un" title="非常规 / 实验性" >微藻光合固碳</span><span class="chip un" title="非常规 / 实验性" >根系与土壤水分</span><span class="chip un" title="非常规 / 实验性" >生物多样性指数</span><span class="chip un" title="非常规 / 实验性" >积水蚊虫滋生风险</span></div>
+</div>
+<div class="card physical" data-un="12">
+  <div class="chead">
+    <span class="gid">P8</span>
+    <span class="gzh">能量与资源流</span>
+    <span class="gen">Energy & Resource Flow</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">12 项小类　·　<span class="unmark">其中 ★ 非常规 12 项</span></span>
+  </div>
+  <div class="gnote">★新增大类：把街道当能量与资源的通道看，能发现被忽略的免费资源</div>
+  <div class="chips"><span class="chip un" title="非常规 / 实验性" >太阳得热与失热</span><span class="chip un" title="非常规 / 实验性" >长波辐射散热</span><span class="chip un" title="非常规 / 实验性" >地下余热（地铁 / 车库排风）</span><span class="chip un" title="非常规 / 实验性" >浅层地温</span><span class="chip un" title="非常规 / 实验性" >雨水资源量</span><span class="chip un" title="非常规 / 实验性" >中水回用量</span><span class="chip un" title="非常规 / 实验性" >光伏发电量</span><span class="chip un" title="非常规 / 实验性" >压电与振动发电量</span><span class="chip un" title="非常规 / 实验性" >风能</span><span class="chip un" title="非常规 / 实验性" >污水热回收</span><span class="chip un" title="非常规 / 实验性" >碳汇量与碳排</span><span class="chip un" title="非常规 / 实验性" >运维能耗与水耗</span></div>
+</div>
+  <h2>体验层面 Experiential</h2>
+  
+<div class="card experiential" data-un="1">
+  <div class="chead">
+    <span class="gid">E1</span>
+    <span class="gzh">光与影</span>
+    <span class="gen">Light & Shadow</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">7 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">遮荫的知觉对应物，也是最廉价的空间界定手段</div>
+  <div class="chips"><span class="chip">光斑与阴影边缘清晰度</span><span class="chip">树影摇曳的动态感</span><span class="chip">光影随一天与季节的节律</span><span class="chip">明暗对比形成的空间界定</span><span class="chip">夜间光环境与溢光控制</span><span class="chip">亮度适应过渡</span><span class="chip un" title="非常规 / 实验性" >频闪与光污染</span></div>
+</div>
+<div class="card experiential" data-un="1">
+  <div class="chead">
+    <span class="gid">E2</span>
+    <span class="gzh">色彩</span>
+    <span class="gen">Colour</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">5 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">色彩编码是「把不可见变成可见」最直接的工具</div>
+  <div class="chips"><span class="chip">地面色彩分区</span><span class="chip">色彩与温度的心理关联</span><span class="chip">材质本色与地域色彩</span><span class="chip">色彩的季节适配</span><span class="chip un" title="非常规 / 实验性" >彩度造成的空间感知差</span></div>
+</div>
+<div class="card experiential" data-un="2">
+  <div class="chead">
+    <span class="gid">E3</span>
+    <span class="gzh">触感与体感</span>
+    <span class="gen">Touch & Somatosensation</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">8 项小类　·　<span class="unmark">其中 ★ 非常规 2 项</span></span>
+  </div>
+  <div class="gnote">近身尺度的感官，直接决定「能不能坐得下」</div>
+  <div class="chips"><span class="chip">表面温度触感</span><span class="chip">辐射热与辐射凉</span><span class="chip">风的抚触与刺痛</span><span class="chip">雾与湿度的皮肤感知</span><span class="chip">粗糙度与足底反馈</span><span class="chip">坐面软硬与人体工学</span><span class="chip un" title="非常规 / 实验性" >木材与石材的温润差异</span><span class="chip un" title="非常规 / 实验性" >静电触感</span></div>
+</div>
+<div class="card experiential" data-un="2">
+  <div class="chead">
+    <span class="gid">E4</span>
+    <span class="gzh">听觉 · 声景</span>
+    <span class="gen">Soundscape</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">7 项小类　·　<span class="unmark">其中 ★ 非常规 2 项</span></span>
+  </div>
+  <div class="gnote">声景已从「降噪」转向「声环境质量设计」</div>
+  <div class="chips"><span class="chip">水声掩蔽</span><span class="chip">风过叶片与雨打顶棚</span><span class="chip">雾化喷射声</span><span class="chip">材质声（木 / 石 / 金属）</span><span class="chip">声景层次与私密性</span><span class="chip un" title="非常规 / 实验性" >安静区与自然声</span><span class="chip un" title="非常规 / 实验性" >声源方位感</span></div>
+</div>
+<div class="card experiential" data-un="4">
+  <div class="chead">
+    <span class="gid">E5</span>
+    <span class="gzh">嗅觉 · 气味景观</span>
+    <span class="gen">Smellscape</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">8 项小类　·　<span class="unmark">其中 ★ 非常规 4 项</span></span>
+  </div>
+  <div class="gnote">最被忽视的感官维度，但恢复性效益已有实证</div>
+  <div class="chips"><span class="chip">植物芳香</span><span class="chip">雨后土气与湿润感</span><span class="chip">水体周围的清新感</span><span class="chip un" title="非常规 / 实验性" >食物香气（咖啡 / 面包）</span><span class="chip">负面气味规避（垃圾点 / 空调外机）</span><span class="chip un" title="非常规 / 实验性" >气味口袋与路径化布置</span><span class="chip un" title="非常规 / 实验性" >文化气味与集体记忆</span><span class="chip un" title="非常规 / 实验性" >高湿闷味与霉味</span></div>
+</div>
+<div class="card experiential" data-un="1">
+  <div class="chead">
+    <span class="gid">E6</span>
+    <span class="gzh">尺度感与空间感</span>
+    <span class="gen">Sense of Scale & Space</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">6 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">空间比例的心理效应</div>
+  <div class="chips"><span class="chip">围合感 D/H</span><span class="chip">开敞度与天空可见范围</span><span class="chip">视线通廊与对景</span><span class="chip">收放节奏带来的心理起伏</span><span class="chip">私密—公共梯度</span><span class="chip un" title="非常规 / 实验性" >顶界面高度的亲密感</span></div>
+</div>
+<div class="card experiential" data-un="1">
+  <div class="chead">
+    <span class="gid">E7</span>
+    <span class="gzh">时间与事件性</span>
+    <span class="gen">Temporality & Eventfulness</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">6 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">把时间做成可感知的设计变量</div>
+  <div class="chips"><span class="chip">干态 / 湿态的空间转换</span><span class="chip">开合动作的仪式感</span><span class="chip">构件随季节的变化</span><span class="chip">可生长性（植物自带的时间维度）</span><span class="chip">昼夜与季节节律</span><span class="chip un" title="非常规 / 实验性" >等待与滞留的时间感知</span></div>
+</div>
+<div class="card experiential" data-un="1">
+  <div class="chead">
+    <span class="gid">E8</span>
+    <span class="gzh">惊奇与可玩性</span>
+    <span class="gen">Surprise & Playfulness</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">5 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">响应性与可操控性带来的参与感</div>
+  <div class="chips"><span class="chip">被激活的响应（人走过 → 云跟随）</span><span class="chip">可操控带来的参与感</span><span class="chip">隐蔽系统可见化的认知惊喜</span><span class="chip">尺度反差带来的趣味</span><span class="chip un" title="非常规 / 实验性" >意外的感官发现</span></div>
+</div>
+<div class="card experiential" data-un="1">
+  <div class="chead">
+    <span class="gid">E9</span>
+    <span class="gzh">安全与舒适</span>
+    <span class="gen">Safety & Comfort</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">6 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">底线维度，任何干预都不能牺牲它</div>
+  <div class="chips"><span class="chip">眩光规避</span><span class="chip">湿滑与结冰的防滑</span><span class="chip">无障碍与适老适幼</span><span class="chip">照明与治安的关系</span><span class="chip">心理安全与「可退可守」的空间</span><span class="chip un" title="非常规 / 实验性" >拥挤与碰撞风险</span></div>
+</div>
+<div class="card experiential" data-un="1">
+  <div class="chead">
+    <span class="gid">E10</span>
+    <span class="gzh">场所认同</span>
+    <span class="gen">Sense of Place</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">5 项小类　·　<span class="unmark">其中 ★ 非常规 1 项</span></span>
+  </div>
+  <div class="gnote">地域气候智慧的转译与文脉表达</div>
+  <div class="chips"><span class="chip">地域气候智慧转译（骑楼 / 冷巷 / 檐廊）</span><span class="chip">历史文脉的克制表达</span><span class="chip">社区共创留下的痕迹</span><span class="chip">街区的商业气质与「烟火气」</span><span class="chip un" title="非常规 / 实验性" >都市传说与地方叙事</span></div>
+</div>
+<div class="card experiential" data-un="2">
+  <div class="chead">
+    <span class="gid">E11</span>
+    <span class="gzh">感知层面的信息设计</span>
+    <span class="gen">Information Design for Perception</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">5 项小类　·　<span class="unmark">其中 ★ 非常规 2 项</span></span>
+  </div>
+  <div class="gnote">把数据变成可感知的东西</div>
+  <div class="chips"><span class="chip">数据具身化</span><span class="chip">引导而非说教</span><span class="chip">反馈的可见性</span><span class="chip un" title="非常规 / 实验性" >标识密度与视觉杂乱</span><span class="chip un" title="非常规 / 实验性" >交互界面的克制度</span></div>
+</div>
+<div class="card experiential" data-un="6">
+  <div class="chead">
+    <span class="gid">E12</span>
+    <span class="gzh">多感官协同与恢复性</span>
+    <span class="gen">Multisensory & Restorative</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">6 项小类　·　<span class="unmark">其中 ★ 非常规 6 项</span></span>
+  </div>
+  <div class="gnote">★新增大类：理论上支撑「小干预也能有大效果」</div>
+  <div class="chips"><span class="chip un" title="非常规 / 实验性" >异位愉悦 alliesthesia（不适时微小改变即有效）</span><span class="chip un" title="非常规 / 实验性" >感官补偿与相加 / 相消</span><span class="chip un" title="非常规 / 实验性" >恢复性环境效益</span><span class="chip un" title="非常规 / 实验性" >感官冲突（噪声叠加高温）</span><span class="chip un" title="非常规 / 实验性" >感官敏感人群差异</span><span class="chip un" title="非常规 / 实验性" >气味—视觉联动</span></div>
+</div>
+<div class="card experiential" data-un="7">
+  <div class="chead">
+    <span class="gid">E13</span>
+    <span class="gzh">健康与人群适应</span>
+    <span class="gen">Health & Adaptation</span>
+    <span class="badge ok">可作筛选条件</span>
+    <span class="cnt">7 项小类　·　<span class="unmark">其中 ★ 非常规 7 项</span></span>
+  </div>
+  <div class="gnote">★新增大类：把「人是谁」写进环境因子的甄别条件</div>
+  <div class="chips"><span class="chip un" title="非常规 / 实验性" >热应激风险分级</span><span class="chip un" title="非常规 / 实验性" >心血管与呼吸系统影响</span><span class="chip un" title="非常规 / 实验性" >花粉过敏暴露</span><span class="chip un" title="非常规 / 实验性" >心理压力与情绪</span><span class="chip un" title="非常规 / 实验性" >适应性 acclimatization</span><span class="chip un" title="非常规 / 实验性" >老年与儿童差异</span><span class="chip un" title="非常规 / 实验性" >户外活动意愿与行为</span></div>
+</div>
+</main>
+<script>
+document.getElementById('onlyun').addEventListener('change', function(){
+  document.body.classList.toggle('onlyun', this.checked);
+});
+</script>
+</body>
+</html>

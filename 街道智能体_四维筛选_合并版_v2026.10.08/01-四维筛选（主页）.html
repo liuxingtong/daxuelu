@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四维筛选 · 胁迫因子 × 环境因子 × 干预策略 × 空间对象（含知识卡）</title>
+<style>
+:root{--bg:#fff;--soft:#f6f7f9;--line:#e3e6ea;--ink:#1c2024;--ink2:#5b6470;--ink3:#8b95a1;
+--blue:#185fa5;--blue50:#e6f1fb;--blue800:#0c447c;
+--teal:#0f6e56;--teal50:#e1f5ee;--teal800:#085041;
+--amber:#854f0b;--amber50:#faeeda;--amberline:#ba7515;--amber800:#633806;
+--purple:#534ab7;--purple50:#eeedfe;--purple800:#26215c;
+--red:#a32d2d;--red50:#fcebeb;--redline:#e24b4a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.7;
+font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",-apple-system,"Segoe UI",sans-serif}
+header{padding:16px 22px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;
+background:rgba(255,255,255,.97);backdrop-filter:blur(8px);z-index:30}
+h1{margin:0 0 2px;font-size:17px;font-weight:600}
+.sub{color:var(--ink3);font-size:12px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.bar input[type=search]{flex:0 1 200px;padding:5px 10px;border:1px solid var(--line);
+border-radius:8px;font-size:12.5px;font-family:inherit;outline:none}
+.bar input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue50)}
+.bar button{padding:5px 11px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:12px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.bar button:hover{border-color:var(--blue);color:var(--blue);background:var(--blue50)}
+.bar button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.bar button.knb{border-color:var(--teal);color:var(--teal800);background:var(--teal50);font-weight:600}
+.bar button.knb:hover{background:var(--teal);color:#fff}
+.bar label{font-size:12px;color:var(--ink2);user-select:none;display:flex;gap:4px;align-items:center}
+.sep{width:1px;height:20px;background:var(--line);margin:0 2px}
+.langs{display:flex;gap:0}
+.langs button{border-radius:0;padding:5px 9px;margin:0}
+.langs button:first-child{border-radius:8px 0 0 8px}
+.langs button:last-child{border-radius:0 8px 8px 0;border-left:none}
+.crumb{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:9px;font-size:12px;color:var(--ink3)}
+.crumb .chip{background:var(--blue50);color:var(--blue800);border:1px solid var(--blue);
+border-radius:20px;padding:1px 9px;cursor:pointer;font-size:11.5px}
+.crumb .chip:hover{background:var(--red50);border-color:var(--redline);color:var(--red)}
+.crumb .chip.m{background:var(--purple50);color:var(--purple800);border-color:var(--purple)}
+.crumb .chip.g{background:var(--teal50);color:var(--teal800);border-color:var(--teal)}
+.crumb .chip.o{background:var(--amber50);color:var(--amber800);border-color:var(--amberline)}
+main{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1.5fr;height:calc(100vh - 150px);overflow:hidden}
+/* 收起左四列：结果列独占，并限制最大宽度避免行太长 */
+main.foldf{grid-template-columns:minmax(0,1fr)}
+main.foldf .col-f{display:none}
+main.foldf .col[data-col="res"]{max-width:1340px;margin:0 auto;border-right:none}
+.col{border-right:1px solid var(--line);overflow-y:auto;padding:10px 9px 70px}
+.col:last-child{border-right:none;background:#fcfcfd}
+.ch{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;
+margin:0 0 8px;padding:6px 8px;border-radius:8px;background:var(--soft);cursor:pointer;user-select:none}
+.ch .tri{font-size:9px;color:var(--ink3);transition:transform .15s}
+.col.fold .tri{transform:rotate(-90deg)}
+.col.fold .cbody{display:none}
+.ch .n{margin-left:auto;font-weight:400;color:var(--ink3);font-size:11.5px}
+.col-s .ch{color:var(--blue800)} .col-g .ch{color:var(--teal800)} .col-m .ch{color:var(--purple800)}
+.col-o .ch{color:var(--amber800)}
+.col-o .opt.on{background:var(--amber50);color:var(--amber800);border-left-color:var(--amberline)}
+.col-o .opt.on .bx{background:var(--amberline);border-color:var(--amberline)}
+.col-o .opt.on .lb em{color:var(--amber800)}
+.col-o .opt .nq{font-size:10px;color:var(--teal800);background:var(--teal50);
+border:1px solid var(--teal);border-radius:8px;padding:0 5px;margin-left:2px}
+/* —— 第 3 维「引导」的通道 × 场景 二级面板 —— */
+.gpanel{margin:3px 0 7px 10px;padding:7px 8px;border:1px dashed var(--purple);border-radius:8px;
+background:var(--purple50)}
+.gpanel .gl{font-size:10.5px;color:var(--purple800);font-weight:600;display:block;margin:0 0 3px}
+.gpanel .gl+ .gc{margin-bottom:6px}
+.gc{display:inline-block;font-size:10.5px;border:1px solid var(--purple);background:#fff;
+color:var(--purple800);border-radius:9px;padding:0 7px;margin:0 4px 4px 0;cursor:pointer;user-select:none}
+.gc:hover{background:var(--purple);color:#fff}
+.gc.on{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:600}
+.gc.off{background:#f2f2f4;border-color:var(--line);color:var(--ink3);cursor:not-allowed;text-decoration:line-through}
+.gc.off:hover{background:#f2f2f4;color:var(--ink3)}
+.gc i{font-style:normal;opacity:.85;margin-left:3px}
+/* —— 附注区（不参与筛选）—— */
+.notesec{margin:12px 0 0;border-top:1px dashed var(--line);padding-top:8px}
+.notebtn{display:flex;align-items:center;gap:6px;width:100%;font-size:11.5px;font-weight:600;
+color:var(--ink2);background:var(--soft);border:1px solid var(--line);border-radius:8px;
+padding:5px 8px;cursor:pointer;font-family:inherit;text-align:left}
+.notebtn:hover{border-color:var(--blue);color:var(--blue)}
+.notebtn .tri{font-size:9px;transition:transform .15s}
+.notebtn.open .tri{transform:rotate(90deg)}
+.notebody{margin-top:6px}
+.nrow{font-size:11.5px;color:var(--ink2);padding:3px 8px;border-left:2px solid var(--line);
+margin-bottom:3px;background:#fbfbfc}
+.nrow b{color:var(--ink);font-weight:600}
+.nrow em{font-style:normal;color:var(--ink3);display:block;font-size:10.5px}
+.opt{display:flex;align-items:center;gap:7px;padding:4px 8px;border-radius:7px;cursor:pointer;
+font-size:12.5px;color:var(--ink2);border-left:2px solid transparent}
+.opt:hover{background:var(--soft)}
+.opt.on{background:var(--blue50);color:var(--blue800);border-left-color:var(--blue)}
+.col-g .opt.on{background:var(--teal50);color:var(--teal800);border-left-color:var(--teal)}
+.col-m .opt.on{background:var(--purple50);color:var(--purple800);border-left-color:var(--purple)}
+.opt .bx{width:13px;height:13px;flex:none;border:1px solid var(--line);border-radius:4px;
+background:#fff;position:relative}
+.opt.on .bx{background:var(--blue);border-color:var(--blue)}
+.col-g .opt.on .bx{background:var(--teal);border-color:var(--teal)}
+.col-m .opt.on .bx{background:var(--purple);border-color:var(--purple)}
+.opt.on .bx::after{content:"";position:absolute;left:3.5px;top:1px;width:4px;height:7px;
+border-right:1.6px solid #fff;border-bottom:1.6px solid #fff;transform:rotate(40deg)}
+.opt .lb{display:flex;flex-direction:column;line-height:1.35;min-width:0}
+.opt .lb em{font-style:normal;font-size:11px;color:var(--ink3)}
+.opt.on .lb em{color:var(--blue800);opacity:.75}
+.col-g .opt.on .lb em{color:var(--teal800)}
+.col-m .opt.on .lb em{color:var(--purple800)}
+.opt .c{margin-left:auto;font-size:11px;color:var(--ink3);flex:none;font-variant-numeric:tabular-nums}
+.opt.zero .c{color:var(--amberline)}
+.opt.dim{opacity:.42}
+.opt .kind{font-size:10px;color:var(--ink3);border:1px solid var(--line);border-radius:8px;padding:0 5px}
+/* 知识卡入口徽标 */
+.knb-ico{flex:none;font-size:10px;line-height:1.5;padding:0 5px;border-radius:8px;cursor:pointer;
+border:1px solid var(--teal);background:var(--teal50);color:var(--teal800);
+font-variant-numeric:tabular-nums;white-space:nowrap}
+.knb-ico:hover{background:var(--teal);color:#fff}
+.opt.on .knb-ico{border-color:var(--teal);background:#fff}
+/* 小项行 */
+.kni{display:flex;align-items:center;gap:6px;padding:2px 8px 2px 31px;font-size:11.5px;
+color:var(--ink3);line-height:1.5}
+.kni .dot{width:5px;height:5px;border-radius:50%;flex:none;background:transparent;border:1px solid var(--line);align-self:flex-start;margin-top:5px}
+.kni .klb{flex:1;min-width:0}
+.kni em{font-style:normal;font-size:10.5px;color:var(--ink3);margin-left:4px}
+.kni.has em{color:var(--teal800);opacity:.7}
+.kni.has{color:var(--teal800);cursor:pointer}
+.kni.has .dot{background:var(--teal);border-color:var(--teal)}
+.kni.has:hover{background:var(--teal50);border-radius:6px}
+.kni .star{color:var(--amberline);font-size:10px}
+.ksep{margin:6px 0 1px;font-size:11px;font-weight:600;color:var(--ink3);padding:0 8px 0 31px}
+.ksep em{font-style:normal;font-weight:400;font-size:10px;color:var(--ink3);margin-left:4px}
+.sub2{font-size:11px;color:var(--ink3);padding:0 8px 4px 31px;line-height:1.5}
+.tabs{display:flex;gap:6px;margin:0 0 10px}
+.tabs button{flex:1;padding:6px 4px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:12px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.tabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.tabs button span{opacity:.75;font-size:11px}
+.res{max-width:100%}
+.cc{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 8px;background:#fff}
+.cc .t{font-size:13.5px;font-weight:600;color:var(--blue800);margin-bottom:2px}
+.cc .t em{font-style:normal;font-weight:400;font-size:11.5px;color:var(--ink3)}
+.cc .md{font-size:11.5px;color:var(--ink3);margin-bottom:5px}
+.cc .tags{margin-bottom:4px}
+.tg{display:inline-block;font-size:10.5px;border-radius:9px;padding:0 6px;margin:0 4px 3px 0;
+border:1px solid var(--line);color:var(--ink3)}
+.tg.s{background:var(--amber50);border-color:var(--amberline);color:var(--amber)}
+.tg.m{background:var(--purple50);border-color:var(--purple);color:var(--purple800)}
+.tg.g{background:var(--teal50);border-color:var(--teal);color:var(--teal800)}
+.cc .kv{font-size:11.5px;color:var(--ink2);margin-top:4px}
+.cc .kv i{color:var(--ink3);font-style:normal}
+.cc .sum{font-size:12.5px;line-height:1.66;background:#fbfcfe;border-left:2px solid var(--blue);
+padding:7px 11px;margin:6px 0 2px;border-radius:0 7px 7px 0}
+.cc .sum.ensum{border-left-color:var(--teal);background:#f8fcfb;font-family:"Segoe UI",
+-apple-system,"Helvetica Neue",sans-serif;font-size:12px;line-height:1.62}
+.cc .sum b{color:var(--blue800);font-weight:600}
+.cc .lab{font-size:10.5px;color:var(--ink3);margin-top:6px;letter-spacing:.02em}
+.badge-new{background:var(--amber50);border:1px solid var(--amberline);color:var(--amber);
+font-size:10px;border-radius:9px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.badge-gap{background:var(--teal50);border:1px solid var(--teal);color:var(--teal800);
+font-size:10px;border-radius:9px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.badge-sense{background:var(--purple50);border:1px solid var(--purple);color:var(--purple800);
+font-size:10px;border-radius:9px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.badge-kn{background:#fff;border:1px solid var(--teal);color:var(--teal800);
+font-size:10px;border-radius:9px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.cc a{color:var(--blue);text-decoration:none;border-bottom:1px dotted var(--blue);font-size:11.5px}
+.mrow{display:flex;align-items:baseline;gap:7px;padding:6px 9px;border-radius:7px;cursor:pointer;
+font-size:12.5px;color:var(--ink2);border:1px solid transparent}
+.mrow:hover{background:var(--soft);border-color:var(--line)}
+.mrow b{color:var(--purple800);font-weight:600}
+.mrow em{font-style:normal;color:var(--ink3);font-size:11.5px}
+.mrow .n{margin-left:auto;font-size:11px;color:var(--ink3);flex:none}
+.empty{color:var(--ink3);font-size:12.5px;padding:14px 6px}
+.hint{background:var(--amber50);border:1px solid var(--amberline);border-radius:9px;
+padding:9px 12px;color:var(--amber);font-size:12px;margin:0 0 10px}
+.hint b{font-weight:600}
+/* 搜索结果提示条 */
+.qbar{background:var(--teal50);border:1px solid var(--teal);border-radius:9px;padding:7px 11px;
+color:var(--teal800);font-size:12px;margin:0 0 10px;display:flex;align-items:center;gap:6px;
+flex-wrap:wrap}
+.qbar b{font-weight:600}
+.qbar em{font-style:normal;color:var(--teal800);opacity:.75;font-size:11px}
+.qbar button{margin-left:auto;padding:3px 10px;border:1px solid var(--teal);background:#fff;
+border-radius:7px;font-size:11.5px;font-family:inherit;color:var(--teal800);cursor:pointer}
+.qbar button:hover{background:var(--teal);color:#fff}
+
+/* ============ 空间矩阵（机制轴） ============ */
+.mxwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+table.mx{border-collapse:collapse;font-size:12px;width:100%;min-width:1080px}
+table.mx th{position:sticky;top:0;z-index:2;background:#f3f6f9;text-align:left;
+padding:8px 10px;font-size:11.5px;font-weight:600;color:var(--ink2);
+border-bottom:1px solid var(--line);white-space:nowrap}
+table.mx th em{font-style:normal;font-weight:400;font-size:10.5px;color:var(--ink3);display:block}
+table.mx td{padding:8px 10px;border-bottom:1px solid #eef1f4;vertical-align:top;line-height:1.6}
+table.mx tr:hover td{background:#fafcfe}
+table.mx tr.mxhl td{background:var(--teal50)}
+table.mx td.obj{font-weight:600;color:var(--teal800);min-width:118px;position:sticky;left:0;
+background:#fff;z-index:1;border-right:1px solid var(--line)}
+table.mx tr:hover td.obj{background:#fafcfe}
+table.mx tr.mxhl td.obj{background:var(--teal50)}
+table.mx td.obj em{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:var(--ink3)}
+table.mx td.obj .sub2{padding:2px 0 0;font-size:11px;color:var(--ink3);line-height:1.5}
+.pchip{display:inline-block;font-size:10.5px;border-radius:8px;padding:1px 6px;margin:0 4px 3px 0;
+border:1px solid var(--line);color:var(--ink2);background:#fff;white-space:nowrap}
+.pchip.rt{border-color:var(--teal);background:var(--teal50);color:var(--teal800)}
+.pchip.dz{border-color:var(--line);background:#f6f7f9;color:var(--ink3)}
+.pchip em{font-style:normal;color:var(--ink3);font-size:10px;margin-left:3px}
+.pchip.rt em{color:var(--teal800);opacity:.7}
+.adjust{font-size:10.5px;color:var(--ink3);margin-top:3px;font-variant-numeric:tabular-nums}
+.adjust b{color:var(--teal800);font-weight:600}
+.mlink{display:inline-block;font-size:11px;border:1px solid var(--purple);background:var(--purple50);
+color:var(--purple800);border-radius:8px;padding:1px 7px;margin:0 4px 3px 0;cursor:pointer}
+.mlink:hover{background:var(--purple);color:#fff}
+.clink{display:inline-block;font-size:11px;border:1px solid var(--blue);background:var(--blue50);
+color:var(--blue800);border-radius:8px;padding:1px 7px;cursor:pointer;white-space:nowrap}
+.clink:hover{background:var(--blue);color:#fff}
+.clink.zero{border-color:var(--line);background:#fff;color:var(--ink3);cursor:default}
+.mxsub{font-size:11px;color:var(--ink3);margin:0 0 8px;line-height:1.6}
+.mxsub b{color:var(--teal800);font-weight:600}
+.fbwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:10px}
+table.fb{border-collapse:collapse;font-size:12px;width:100%;min-width:940px}
+table.fb th{background:#f3f6f9;text-align:left;padding:8px 10px;font-size:11.5px;font-weight:600;
+color:var(--ink2);border-bottom:1px solid var(--line);white-space:nowrap}
+table.fb th em{font-style:normal;font-weight:400;font-size:10.5px;color:var(--ink3);display:block}
+table.fb td{padding:8px 10px;border-bottom:1px solid #eef1f4;vertical-align:top;line-height:1.6}
+table.fb td.st{font-weight:600;color:var(--teal800);white-space:nowrap}
+table.fb td.st i{display:inline-block;width:17px;height:17px;border-radius:50%;background:var(--teal);
+color:#fff;font-style:normal;font-size:10.5px;text-align:center;line-height:17px;margin-right:5px}
+table.fb td em{font-style:normal;color:var(--ink3);font-size:11px;display:block;margin-top:2px}
+.mxsec{margin:16px 0 6px;font-size:13px;font-weight:600;color:var(--teal800);
+border-bottom:1px solid var(--teal50);padding-bottom:4px}
+.mxsec em{font-style:normal;font-weight:400;font-size:11.5px;color:var(--ink3);margin-left:6px}
+table.pc{border-collapse:collapse;font-size:12px;width:100%}
+table.pc th{background:#f3f6f9;text-align:left;padding:7px 10px;font-size:11.5px;font-weight:600;
+color:var(--ink2);border-bottom:1px solid var(--line)}
+table.pc th em{font-style:normal;font-weight:400;font-size:10.5px;color:var(--ink3);display:block}
+table.pc td{padding:7px 10px;border-bottom:1px solid #eef1f4;vertical-align:top;line-height:1.6}
+table.pc td.k{font-weight:600;color:var(--teal800);white-space:nowrap}
+table.pc td.k em{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:var(--ink3)}
+
+/* ============ 编辑模式 ============ */
+.bar button.edon{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+.ebar{display:none;align-items:center;gap:9px;flex-wrap:wrap;margin-top:9px;padding:7px 11px;
+background:var(--teal50);border:1px solid var(--teal);border-radius:9px;font-size:12px;color:var(--teal800)}
+.ebar b{font-weight:600}
+.ebar em{font-style:normal;font-size:11px;color:var(--teal800);opacity:.82}
+.ebar button{padding:3px 10px;border:1px solid var(--teal);background:#fff;
+border-radius:7px;font-size:11.5px;font-family:inherit;color:var(--teal800);cursor:pointer}
+.ebar button:hover{background:var(--teal);color:#fff}
+.ebar button:last-child{margin-left:auto}
+.tg .x{display:inline-block;margin-left:4px;padding:0 3px;border-radius:5px;cursor:pointer;
+font-weight:600;font-style:normal;opacity:.55;font-size:11.5px;line-height:1.35}
+.tg .x:hover{background:var(--redline);color:#fff;opacity:1}
+.tg.e{background:var(--blue50);border-color:var(--blue);color:var(--blue800)}
+.tg.e .x:hover{background:var(--redline);color:#fff}
+.tg.none{background:#fff;border-style:dashed;color:var(--ink3);font-style:normal}
+.cc.ed{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal50)}
+.erow{display:flex;gap:6px;margin:7px 0 0;flex-wrap:wrap}
+.ebtn{padding:3px 10px;border:1px dashed var(--teal);background:#fff;border-radius:7px;
+font-size:11.5px;font-family:inherit;color:var(--teal800);cursor:pointer}
+.ebtn:hover{background:var(--teal50)}
+.ebtn em{font-style:normal;font-size:10.5px;opacity:.75;margin-left:3px}
+.ebtn.done{margin-top:9px;border-style:solid;background:var(--teal);color:#fff;border-color:var(--teal)}
+.ebtn.done:hover{background:var(--teal800)}
+.pick{margin:8px 0 0;padding:9px 11px;background:#f8fcfb;border:1px solid #cdeadf;border-radius:9px}
+.pkt{font-size:11.5px;font-weight:600;color:var(--teal800);margin-bottom:7px}
+.pkt em{font-style:normal;font-weight:400;color:var(--ink3);font-size:11px;margin-left:5px}
+.pkg{display:flex;flex-wrap:wrap;gap:5px}
+.pkb{display:inline-block;padding:2px 9px;border:1px solid var(--teal);background:#fff;
+border-radius:14px;font-size:11.5px;color:var(--teal800);cursor:pointer}
+.pkb:hover{background:var(--teal);color:#fff}
+.pkb.none{border-style:dashed;color:var(--ink3);border-color:var(--line);cursor:default}
+.pkb.none:hover{background:#fff;color:var(--ink3)}
+.pkb em{font-style:normal;font-size:10.5px;opacity:.7;margin-left:3px}
+
+/* ---- 空间矩阵编辑态 ---- */
+table.mx tr.mxed td.obj{box-shadow:inset 3px 0 0 var(--teal)}
+.pchip.ed{cursor:pointer;border-style:dashed}
+.pchip.ed:hover{border-style:solid}
+.pchip .px{display:inline-block;margin-left:3px;padding:0 3px;border-radius:4px;cursor:pointer;
+font-weight:600;font-style:normal;opacity:.5;font-size:11px;line-height:1.3}
+.pchip .px:hover{background:var(--redline);color:#fff;opacity:1}
+.pchip .rtg{display:inline-block;margin-left:3px;padding:0 4px;border-radius:4px;cursor:pointer;
+font-style:normal;font-size:10px;opacity:.75;border:1px solid currentColor;line-height:1.3}
+.pchip .rtg:hover{opacity:1;background:#fff}
+.pchip.dash{border-style:dashed;background:#fff;color:var(--ink3);cursor:pointer}
+.pchip.dash:hover{background:var(--teal50);color:var(--teal800)}
+.xbtns{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.xbtn{padding:2px 8px;border:1px dashed var(--teal);background:#fff;border-radius:6px;
+font-size:11px;font-family:inherit;color:var(--teal800);cursor:pointer;white-space:nowrap}
+.xbtn:hover{background:var(--teal50)}
+.xbtn.on{border-style:solid;background:var(--teal);color:#fff}
+.mxpick{margin-top:6px;padding:8px 10px;background:#f8fcfb;border:1px solid #cdeadf;border-radius:8px;
+min-width:240px}
+.mxpick .pkt{font-size:11px;font-weight:600;color:var(--teal800);margin-bottom:6px}
+.mxpick .pkg{display:flex;flex-wrap:wrap;gap:4px;max-height:210px;overflow:auto}
+.mximput{display:flex;gap:5px;margin-top:7px}
+.mximput input{flex:1;min-width:80px;padding:3px 7px;border:1px solid var(--line);border-radius:6px;
+font-family:inherit;font-size:11.5px}
+.mximput button{padding:3px 10px;border:1px solid var(--teal);background:var(--teal);color:#fff;
+border-radius:6px;font-size:11.5px;font-family:inherit;cursor:pointer}
+table.mx td.adjust b.rt{color:var(--teal800)}
+table.mx td.adjust b.dz{color:var(--ink3)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);
+color:#fff;padding:9px 18px;border-radius:9px;font-size:12.5px;opacity:0;transition:opacity .2s;
+pointer-events:none;z-index:99}
+.toast.on{opacity:.93}
+/* ============ 案例查询区 ============ */
+.cqp{margin:0 0 10px;padding:10px 12px 11px;background:#fbfcfe;
+border:1px solid var(--line);border-radius:10px}
+.cqr{display:flex;gap:7px;align-items:center}
+.cqr input{flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:8px;
+font-size:12.5px;font-family:inherit;outline:none;background:#fff}
+.cqr input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue50)}
+.cqr button{padding:5px 10px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:11.5px;font-family:inherit;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.cqr button:hover{border-color:var(--blue);color:var(--blue);background:var(--blue50)}
+.cqrow{display:flex;gap:8px;align-items:flex-start;margin:7px 0 0;flex-wrap:wrap}
+.cqk{flex:0 0 32px;font-size:11.5px;color:var(--ink3);padding-top:2px;line-height:1.5}
+.cqg{display:flex;gap:5px;flex-wrap:wrap;flex:1}
+.cqb{display:inline-block;padding:2px 9px;border:1px solid var(--line);background:#fff;
+border-radius:14px;font-size:11.5px;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.cqb:hover{border-color:var(--blue);color:var(--blue)}
+.cqb.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.cqb em{font-style:normal;font-size:10.5px;opacity:.75;margin-left:3px}
+.cqb.on em{opacity:.9}
+.cqb .n{font-size:10.5px;opacity:.6;margin-left:3px}
+.cqb.on .n{opacity:.85}
+.cqhint{margin:8px 0 0;font-size:11.5px;color:var(--ink3);display:flex;align-items:center;gap:8px}
+.cqhint button{padding:2px 9px;border:1px solid var(--line);background:#fff;border-radius:7px;
+font-size:11px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.cqhint button:hover{border-color:var(--redline);color:var(--red);background:var(--red50)}
+
+/* ============ 知识卡抽屉 ============ */
+.mask{position:fixed;inset:0;background:rgba(20,24,28,.26);opacity:0;pointer-events:none;
+transition:opacity .18s;z-index:40}
+.mask.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(600px,94vw);background:#fff;
+border-left:1px solid var(--line);box-shadow:-10px 0 28px rgba(0,0,0,.1);
+transform:translateX(102%);transition:transform .22s ease;z-index:41;
+display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.dh{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);flex:none}
+.dh h3{margin:0;font-size:14.5px;font-weight:600;color:var(--teal800)}
+.dh h3 em{font-style:normal;font-size:11.5px;color:var(--ink3);font-weight:400;margin-left:6px}
+.dh .cn{margin-left:auto;font-size:11.5px;color:var(--ink3)}
+.dh button{padding:4px 10px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:12px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.dh button:hover{border-color:var(--blue);color:var(--blue);background:var(--blue50)}
+.db{overflow-y:auto;padding:14px 18px 70px;flex:1}
+.dsub{display:flex;gap:7px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+.dsub input[type=search]{flex:1 1 150px;padding:5px 10px;border:1px solid var(--line);border-radius:8px;
+font-size:12.5px;font-family:inherit;outline:none}
+.dsub input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal50)}
+.dsub button{padding:5px 10px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:12px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.dsub button:hover{border-color:var(--teal);color:var(--teal800);background:var(--teal50)}
+.dsub button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.kgl{margin:14px 0 6px;font-size:12px;font-weight:600;color:var(--teal800);
+border-bottom:1px solid var(--teal50);padding-bottom:3px}
+.kgl em{font-style:normal;color:var(--ink3);font-weight:400;font-size:11px;margin-left:6px}
+.kli{display:flex;align-items:baseline;gap:7px;padding:5px 8px;border-radius:7px;cursor:pointer;
+font-size:12.5px;color:var(--ink2)}
+.kli:hover{background:var(--teal50)}
+.kli b{color:var(--teal800);font-weight:600}
+.kli em{font-style:normal;color:var(--ink3);font-size:11px}
+.kli .n{margin-left:auto;font-size:11px;color:var(--ink3)}
+.kh{padding:0 0 10px;border-bottom:1px solid var(--line);margin:0 0 12px}
+.kh h2{margin:0 0 4px;font-size:18px;font-weight:600;color:var(--teal800);display:inline}
+.kh .unit{font-size:12px;color:#fff;background:var(--teal);border-radius:5px;
+padding:1px 8px;margin-left:8px;vertical-align:2px}
+.kh .khg{display:block;font-size:12px;color:var(--ink3);margin-top:2px}
+.kbox{background:var(--soft);border-radius:9px;padding:10px 13px;margin:0 0 10px;font-size:12.8px}
+.kbox.hl{background:var(--teal50)}
+.kbox.hl b{color:var(--teal800)}
+.kbox.warn{background:var(--amber50);color:var(--amber)}
+.kbox.warn b{color:var(--amber)}
+.kbox .en{display:block;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);
+font-family:"Segoe UI",-apple-system,"Helvetica Neue",sans-serif;font-size:11.8px;
+line-height:1.6;color:var(--ink2)}
+.kbox.warn .en{border-top-color:var(--amberline);color:var(--amber)}
+.kh3{font-size:12.5px;font-weight:600;margin:15px 0 6px;color:var(--ink2)}
+table{width:100%;border-collapse:collapse;font-size:12.3px;margin:0 0 4px}
+th{background:var(--soft);text-align:left;font-weight:600;padding:6px 9px;border:1px solid var(--line);
+font-size:11.5px;color:var(--ink2)}
+td{padding:6px 9px;border:1px solid var(--line);vertical-align:top}
+tr.lv-ok td:first-child{border-left:3px solid var(--teal)}
+tr.lv-warn td:first-child{border-left:3px solid var(--amberline)}
+tr.lv-bad td:first-child{border-left:3px solid var(--redline)}
+tr.lv-info td:first-child{border-left:3px solid var(--line)}
+td.v{font-family:Consolas,monospace;font-weight:600;color:var(--ink);white-space:nowrap}
+td .en{display:block;font-family:"Segoe UI",-apple-system,sans-serif;font-size:11.3px;
+color:var(--ink3);margin-top:2px;line-height:1.5}
+.tag{font-size:10.5px;border-radius:10px;padding:0 7px;border:1px solid var(--line);color:var(--ink3);
+white-space:nowrap}
+tr.lv-ok .tag{color:var(--teal800);background:var(--teal50);border-color:var(--teal)}
+tr.lv-warn .tag{color:var(--amber);background:var(--amber50);border-color:var(--amberline)}
+tr.lv-bad .tag{color:var(--red);background:var(--red50);border-color:var(--redline)}
+.pill{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:6px;
+padding:1px 9px;margin:2px 5px 2px 0;font-size:12px;color:var(--ink2)}
+.pill.clk{cursor:pointer;border-color:var(--blue);color:var(--blue)}
+.pill.clk:hover{background:var(--blue50)}
+.kdb{font-size:11.5px;color:var(--ink3);margin:14px 0 0}
+/* 卡片底部的返回目录按钮 */
+.kacts{display:flex;gap:8px;margin:18px 0 0;padding-top:13px;border-top:1px solid var(--line)}
+.kacts button{padding:6px 14px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:12.5px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.kacts button:hover{border-color:var(--teal);color:var(--teal800);background:var(--teal50)}
+.kacts button.pri{background:var(--teal);border-color:var(--teal);color:#fff}
+.kacts button.pri:hover{background:var(--teal800);color:#fff}
+.kgl.cur{background:var(--teal50);border-radius:6px;padding:3px 7px;border-bottom-color:transparent}
+.dh #dback{border-color:var(--teal);color:var(--teal800);background:var(--teal50);font-weight:600}
+.dh #dback:hover{background:var(--teal);color:#fff}
+/* 中英对照的间距统一处理（.opt .lb em 已有专门规则，特异性更高不受影响） */
+h1 em{display:block;font-style:normal;font-size:12px;font-weight:400;
+color:var(--ink3);margin-top:1px}
+.sub em{display:block;font-style:normal;font-size:11.5px;color:#9aa3ad;margin-top:1px}
+button em,.ch em,.crumb em,.hint em{font-style:normal;font-weight:400;font-size:11px;
+opacity:.82;margin-left:4px}
+.drawer em{font-style:normal;font-weight:400;color:var(--ink3)}
+.drawer h2 em{font-size:12px;margin-left:6px}
+.drawer .kh3 em{font-size:11px;margin-left:5px}
+.drawer th em{font-size:10.5px;margin-left:4px}
+.drawer .kgl em{font-size:11px;margin-left:6px}
+.drawer .kli em{margin-left:6px}
+.drawer .kbox em,.drawer .pill em{font-size:11.5px;margin-left:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="h1"></h1>
+  <div class="sub" id="hsub"></div>
+  <div class="bar">
+    <button id="p-s" class="on" data-p="s"></button>
+    <button id="p-m" data-p="m"></button>
+    <button id="p-g" data-p="g"></button>
+    <button id="foldb"></button>
+    <span class="sep"></span>
+    <input type="search" id="q">
+    <label><input type="checkbox" id="rel" checked> <span id="l-rel"></span></label>
+    <label><input type="checkbox" id="sub"> <span id="l-sub"></span></label>
+    <label><input type="checkbox" id="knsub"> <span id="l-knsub"></span></label>
+    <button id="knbtn" class="knb"></button>
+    <button id="edm"></button>
+    <span class="sep"></span>
+    <button id="clr"></button>
+    <span class="sep"></span>
+    <span class="langs">
+      <button data-lang="zh">中文</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="both" class="on">双语</button>
+    </span>
+  </div>
+  <div class="crumb" id="crumb"></div>
+  <div class="ebar" id="ebar"></div>
+</header>
+<main id="main"></main>
+
+<input type="file" id="efile" accept=".json" hidden>
+<input type="file" id="mfile" accept=".json" hidden>
+<div class="toast" id="toast"></div>
+<div class="mask" id="mask"></div>
+<aside class="drawer" id="drawer">
+  <div class="dh" id="dhead"></div>
+  <div class="db" id="dbody"></div>
+</aside>
+
+<script src="sm_data.js"></script>
+<script src="i18n.js"></script>
+<script src="knowledge.js"></script>
+<script>
+(function(){
+  var D = window.SM_DATA3 || {stressors:[],envGroups:[],measureGroups:[],measures:[],cases:[]};
+  var I = window.SM_I18N || {ui:{},pathEn:{},kindEn:{}};
+  var U = I.ui||{}, LVE = I.lvEn||{};
+  var KN = window.SM_KNOWLEDGE || {};
+  var S=D.stressors, G=D.envGroups, MG=D.measureGroups, M=D.measures, C=D.cases;
+  var MO=D.matrixObjects||[], PC=D.paramCats||[], FB=D.feedback||[];
+  var MOIX={}; MO.forEach(function(x){MOIX[x.id]=x;});
+  var CIX={},GIX={},MGIX={},MIX={};
+  C.forEach(function(x){CIX[x.id]=x;}); G.forEach(function(x){GIX[x.id]=x;});
+  MG.forEach(function(x){MGIX[x.id]=x;}); M.forEach(function(x){MIX[x.id]=x;});
+  /* ---- 第 3 维「引导」的通道 × 场景（Q19-D 双维可筛）---- */
+  var GCH=D.guideChannels||[], GSC=D.guideScenarios||[], GMAT=D.guideMatrix||{};
+  var GCHIX={},GSCIX={};
+  GCH.forEach(function(x){GCHIX[x.key]=x;}); GSC.forEach(function(x){GSCIX[x.key]=x;});
+  function gchN(k){return GCHIX[k]?GCHIX[k].zh:k;}
+  function gchEn(k){return GCHIX[k]?(GCHIX[k].en||''):'';}
+  function gscN(k){return GSCIX[k]?GSCIX[k].zh:k;}
+  function gscEn(k){return GSCIX[k]?(GSCIX[k].en||''):'';}
+  function gOK(ch,sc){ var r=(GMAT[ch]||{})[sc]; return !r||r!=='no'; }  // ✗ 的格子不可选
+  /* ---- 案例 → 涉及的空间对象（由「措施大类 → 空间对象」派生，与矩阵页签同一数据源）---- */
+  var CASE_OBJ={};
+  C.forEach(function(c){
+    var seen={},out=[];
+    (c.measureGroups||[]).forEach(function(gid){
+      var g=MGIX[gid]; if(!g||!g.objects) return;
+      g.objects.forEach(function(oid){ if(!seen[oid]){seen[oid]=1;out.push(oid);} });
+    });
+    CASE_OBJ[c.id]=out;
+  });
+  function coOf(c){ return CASE_OBJ[c.id]||[]; }
+  /* ---- 附注区：path 为 N / D 的措施大类（不参与筛选）---- */
+  var NOTE_MG = MG.filter(function(g){ return g.path==='N'||g.path==='D'; });
+  var MAIN_MG = MG.filter(function(g){ return g.path!=='N'&&g.path!=='D'; });
+  var sel={s:{},g:{},m:{},o:{}};
+  var gsel={ch:{},sc:{}};   // 「引导」的二级筛选：感官通道 × 目标场景（组内 OR，跨组 AND）
+  var gOpen=false;          // 「引导」二级面板是否展开
+  var noteOpen=false;       // 附注区是否展开
+  var qf={dim:{},book:{},region:{}};   // 案例查询：维度 / 来源 / 地区（组内 OR，组间 AND）
+  var order=['s','g','m','o'];
+  var tab='case';
+  var fold={s:false,g:false,m:false,o:false};
+  var foldFilters=false;   // 是否收起左侧筛选列（给案例 / 知识卡腾空间）
+  var scrollMem={};        // 各列滚动位置的记忆：折叠、展开、重渲染都能保持
+  var mxHL=null;           // 空间矩阵里要高亮的空间对象 id（从措施页 / 案例页跳过来时设置）
+  var objLock=null;        // 从矩阵点「相关案例」跳过来时，锁定的那一批案例 id
+  var mxObj=null;          // 该锁定对应的空间对象 id（用于面包屑提示）
+  var lang='both';   // zh | en | both
+  var dOpen=false, dView={mode:'list',key:null,gid:null,q:'',onlySense:false};
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function md(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+  function nOn(o){return Object.keys(o).length;}
+  function toast(t){
+    var el=document.getElementById('toast'); if(!el) return;
+    el.textContent=t; el.classList.add('on');
+    clearTimeout(el._t); el._t=setTimeout(function(){ el.classList.remove('on'); },1900);
+  }
+  function idx(list,id,k){ for(var i=0;i<list.length;i++){ if(list[i].id===id) return list[i][k]; } return id; }
+  // 名称显示：按 lang 组合主名 + 副名
+  function dual(zh,en,cls){
+    zh=zh||''; en=en||'';
+    if(lang==='zh') return esc(zh||en);
+    if(lang==='en') return esc(en||zh);
+    if(!en||en===zh) return esc(zh);
+    if(!zh) return esc(en);
+    return esc(zh)+'<em>'+esc(en)+'</em>';
+  }
+  // 正文显示：中文 + 英文（英文以 .en 块附在下方）
+  function kb(zh,en){
+    var h='';
+    if(lang!=='en' && zh) h+=md(zh);
+    if(lang==='en'){ if(en) h+=md(en); return h; }
+    if(lang==='both' && en) h+='<span class="en">'+md(en)+'</span>';
+    return h;
+  }
+  function sn(sid){ return idx(S,sid,'name'); }
+  function snEn(sid){ return idx(S,sid,'nameEn'); }
+  function gn(gid){ return GIX[gid]?GIX[gid].zh:gid; }
+  function gnEn(gid){ return GIX[gid]?(GIX[gid].en||''):''; }
+  function mn(mid){ return MGIX[mid]?MGIX[mid].name:mid; }
+  function mnEn(mid){ return MGIX[mid]?(MGIX[mid].nameEn||''):''; }
+  function urls(t){return (t||'').match(/https?:\/\/[^\s｜]+/g)||[];}
+  function hasAny(set,arr){ for(var k in set){ if(arr.indexOf(k)>=0) return true; } return false; }
+  function mHasAny(ids,set){ for(var k in set){ if(ids.indexOf(k)>=0) return true; } return false; }
+  // 知识卡名归一化（与后端 norm 一致）
+  function knorm(s){ s=(s||'').replace(/^★/,'').trim(); var i=s.indexOf('（');
+    return i>=0? s.slice(0,i).trim():s; }
+  // 知识卡 → 所属大类
+  var KN2G={}, KN_LIST=[];
+  G.forEach(function(g){
+    (g.itemsZh||[]).forEach(function(it){
+      if(it.indexOf('—')===0) return;
+      var k=knorm(it);
+      if(!KN[k]) return;
+      if(!KN2G[k]){ KN2G[k]=[]; KN_LIST.push({key:k,gid:g.id}); }
+      KN2G[k].push(g);
+    });
+  });
+  var KN_KEYS={}; KN_LIST.forEach(function(x){KN_KEYS[x.key]=1;});
+  // 多感官相关大类（用于「只看多感官」筛选）
+  var SENSE_G={'E2':1,'E4':1,'E5':1,'E12':1};
+
+  // ---- 关联因子的人工筛查（编辑模式）----
+  var EDIT_KEY='sm_case_links_v1';
+  var editMode=false, addOpen=null;
+  var ORIG={}, EDIT={};
+  C.forEach(function(c){ ORIG[c.id]={s:(c.stressors||[]).slice(), g:(c.envGroups||[]).slice()}; });
+  try{ EDIT=JSON.parse(localStorage.getItem(EDIT_KEY)||'{}')||{}; }catch(e){ EDIT={}; }
+
+  // ---- 空间矩阵的人工筛查（编辑模式，第二份可编辑数据）----
+  // 与案例关联分开存 key：矩阵改的是「参数可调性 / 措施↔对象映射 / 参数增删」，数据结构完全不同
+  var MX_KEY='sm_matrix_edit_v1';
+  var MX={};      // { params:{objId:{rt:[],dz:[],add:[],del:[]}}, objMeas:{objId:[mid]}, measSw:{mid:{add:[],del:[]}} }
+  var MXC={};     // 与 MX 同结构、未改动字段留空 —— 渲染时 applyMatrixEdit 直接读 MX
+  var mxOpen=null;   // 当前展开的候选面板：{oid, kind}
+  // 内置快照（供「还原矩阵」用）：每个对象的参数集合、可调集合、措施集合
+  var MX_SNAP={};
+  function snapMatrix(){
+    MX_SNAP={};
+    MO.forEach(function(o){
+      MX_SNAP[o.id]={
+        params:o.params.slice(),
+        rt:(o.runtime||[]).slice(),
+        dz:(o.design||[]).slice(),
+        meas:(o.measures||[]).slice()
+      };
+    });
+  }
+  snapMatrix();
+  try{ MX=JSON.parse(localStorage.getItem(MX_KEY)||'{}')||{}; }catch(e){ MX={}; }
+  // 归一化结构：从 localStorage 读回来的可能是残缺对象，必须补齐键，否则 MX.params[x]=… 会抛错
+  function normMX(){
+    if(!MX || typeof MX!=='object') MX={};
+    if(!MX.params || typeof MX.params!=='object') MX.params={};
+    if(!MX.measSw || typeof MX.measSw!=='object') MX.measSw={};
+    if(!MX.objMeas || typeof MX.objMeas!=='object') MX.objMeas={};
+    return MX;
+  }
+  normMX();
+  function mxTouched(){
+    return Object.keys(MX.params||{}).length + Object.keys(MX.objMeas||{}).length +
+           Object.keys(MX.measSw||{}).length;
+  }
+  function saveMatrixEdit(){
+    try{ localStorage.setItem(MX_KEY, JSON.stringify(MX)); }
+    catch(e){ toast(lang==='en'?'Cannot save in this browser':'本机浏览器无法保存'); }
+  }
+  function applyEdit(){
+    C.forEach(function(c){
+      var e=EDIT[c.id]; if(!e) return;
+      if(e.s) c.stressors=e.s.slice();
+      if(e.g) c.envGroups=e.g.slice();
+    });
+  }
+  function saveEdit(){
+    try{ localStorage.setItem(EDIT_KEY, JSON.stringify(EDIT)); }
+    catch(e){ toast(lang==='en'?'Cannot save in this browser':'本机浏览器无法保存'); }
+  }
+  function touch(cid){
+    var c=CIX[cid]; if(!c) return;
+    EDIT[cid]={s:(c.stressors||[]).slice(), g:(c.envGroups||[]).slice()};
+    saveEdit();
+  }
+
+  // ---- 案例全文索引：名称 / 地区 / 负责人 / 中英概括 / 关键数据 / 各类标签 ----
+  var CASE_HAY={};
+  function buildHay(){
+    CASE_HAY={};
+    C.forEach(function(c){
+      var p=[c.name,c.nameEn,c.region,c.year,c.owner,c.dim,c.book,c.summary,c.summaryEn,c.srclink];
+      (c.kv||[]).forEach(function(r){ p.push((r||[]).join(' ')); });
+      (c.stressors||[]).forEach(function(x){ p.push(sn(x),snEn(x)); });
+      (c.measureGroups||[]).forEach(function(x){
+        var g=MGIX[x]; if(g) p.push(g.name,g.nameEn,g.desc,g.descEn);
+      });
+      (c.envGroups||[]).forEach(function(x){
+        var g=GIX[x]; if(g) p.push(g.zh,g.en);
+      });
+      (c.measures||[]).forEach(function(x){
+        var m=MIX[x]; if(m) p.push(m.name,m.nameEn);
+      });
+      // 「引导」的通道 / 场景 + 涉及的空间对象（第 4 维）也纳入全文搜索
+      (c.guideCh||[]).forEach(function(x){ p.push(gchN(x),gchEn(x),'引导','Guidance'); });
+      (c.guideSc||[]).forEach(function(x){ p.push(gscN(x),gscEn(x)); });
+      (coOf(c)||[]).forEach(function(x){ var o=MOIX[x]; if(o) p.push(o.name,o.nameEn); });
+      CASE_HAY[c.id]=p.filter(Boolean).join(' ').toLowerCase();
+    });
+  }
+  // 改动关联后：重建搜索索引 + 重算「环境因子 → 关联胁迫因子」（供反查过滤）
+  function rebuildAfterEdit(){
+    buildHay();
+    G.forEach(function(g){
+      var ids={};
+      C.forEach(function(c){
+        if((c.envGroups||[]).indexOf(g.id)<0) return;
+        (c.stressors||[]).forEach(function(s){ ids[s]=1; });
+      });
+      g.stressors=Object.keys(ids);
+    });
+  }
+
+  /* ---- 空间矩阵编辑：把本机改动落到 MO 上，并重算全部派生量 ---- */
+  // 派生链：措施↔对象（可改）→ 对象的措施集 → 对象的案例集（由措施的案例并集）→ 可调性
+  // 两种改法并存：objMeas[oid] = 整体覆盖该对象的措施列表（权威）；measSw[mid] = 逐个增删（叠加）
+  function measuresOfObj(oid){
+    var sw=MX.measSw||{};
+    // 先取基线：有整体覆盖用覆盖，否则用内置
+    var cur = (MX.objMeas && MX.objMeas[oid])
+      ? MX.objMeas[oid].slice()
+      : (MOIX[oid]._baseMeas||[]).slice();
+    // 再叠加逐条开关
+    MG.forEach(function(g){
+      var s=sw[g.id]; if(!s) return;
+      var i=cur.indexOf(g.id);
+      if(s.del && s.del.indexOf(oid)>=0 && i>=0) cur.splice(i,1);
+      if(s.add && s.add.indexOf(oid)>=0 && cur.indexOf(g.id)<0) cur.push(g.id);
+    });
+    return cur;
+  }
+  // 记录内置基线（措施列表、参数列表），供编辑后回溯
+  function ensureMatrixBaseline(){
+    MO.forEach(function(o){
+      if(!o._baseMeas) o._baseMeas=(o.measures||[]).slice();
+      if(!o._baseParams) o._baseParams=(o.params||[]).slice();
+    });
+  }
+  function applyMatrixEdit(){
+    ensureMatrixBaseline();
+    MO.forEach(function(o){
+      // ---- 参数：删 / 加 + 可调性 ----
+      var pe=(MX.params||{})[o.id];
+      var params = o._baseParams.slice();
+      var rt = (MX_SNAP[o.id].rt||[]).slice();
+      var dz = (MX_SNAP[o.id].dz||[]).slice();
+      if(pe){
+        (pe.del||[]).forEach(function(p){ var i=params.indexOf(p); if(i>=0) params.splice(i,1); });
+        (pe.add||[]).forEach(function(p){ if(params.indexOf(p)<0) params.push(p); });
+        // rt / dz 是「该对象当前的完整可调性指派」；未指派的按内置回退
+        if(pe.rt || pe.dz){
+          var nrt=[], ndz=[];
+          params.forEach(function(p){
+            if((pe.rt||[]).indexOf(p)>=0) nrt.push(p);
+            else if((pe.dz||[]).indexOf(p)>=0) ndz.push(p);
+            else if(RT_SET0[p]) nrt.push(p);
+            else ndz.push(p);
+          });
+          rt=nrt; dz=ndz;
+        } else {
+          rt = params.filter(function(p){ return RT_SET0[p]; });
+          dz = params.filter(function(p){ return !RT_SET0[p]; });
+        }
+      } else {
+        rt = params.filter(function(p){ return RT_SET0[p]; });
+        dz = params.filter(function(p){ return !RT_SET0[p]; });
+      }
+      o.params = params;
+      o.paramsEn = params.map(function(p){ return PARAM_EN_ALL[p]||p; });
+      o.runtime = params.filter(function(p){ return rt.indexOf(p)>=0; });
+      o.design  = params.filter(function(p){ return dz.indexOf(p)>=0; });
+      o.n_param = params.length;
+      o.n_runtime = o.runtime.length;
+      o.n_design = o.design.length;
+      // ---- 措施与案例（案例由「措施 → 案例」并集派生，与内置口径一致）----
+      o.measures = measuresOfObj(o.id);
+      o.n_measure = o.measures.length;
+      var cids=[];
+      o.measures.forEach(function(mid){
+        var g=MGIX[mid]; if(!g) return;
+        (g.cases||[]).forEach(function(cid){ if(cids.indexOf(cid)<0) cids.push(cid); });
+      });
+      o.cases=cids; o.n_case=cids.length;
+      var f={};
+      cids.forEach(function(cid){ var c=CIX[cid]; if(!c) return;
+        (c.stressors||[]).forEach(function(s){ f[s]=(f[s]||0)+1; }); });
+      o.stressors=Object.keys(f).map(function(k){ return [k,f[k]]; })
+        .sort(function(a,b){ return b[1]-a[1]; });
+    });
+  }
+  // 重建 RT_SET / DZ_SET（pchip 上色与概览数字都依赖它）
+  function rebuildParamSets(){
+    RT_SET={}; DZ_SET={};
+    MO.forEach(function(o){
+      (o.runtime||[]).forEach(function(p){RT_SET[p]=1;});
+      (o.design||[]).forEach(function(p){DZ_SET[p]=1;});
+    });
+  }
+  // 矩阵编辑的总入口：落改动 → 重算可调性表 → 重建搜索索引 → 重渲染
+  function applyMatrixAndRender(){
+    applyMatrixEdit();
+    rebuildParamSets();
+    rebuildAfterEdit();
+    render();
+  }
+  // 给某个对象加一个参数（新词自动按「设计期定死」起步，可在页面上切）
+  function addMatrixParam(oid, p){
+    var o=MOIX[oid]; if(!o) return;
+    p=String(p||'').trim(); if(!p) return;
+    if(!MX.params[oid]){
+      MX.params[oid]={rt:(o.runtime||[]).slice(), dz:(o.design||[]).slice(), add:[], del:[]};
+    }
+    var ep=MX.params[oid];
+    ep.rt=ep.rt||[]; ep.dz=ep.dz||[]; ep.add=ep.add||[]; ep.del=ep.del||[];
+    var di=ep.del.indexOf(p);
+    if(di>=0){ ep.del.splice(di,1); }              // 之前在删除表里 → 撤销删除
+    else if(o.params.indexOf(p)<0){
+      if(ep.add.indexOf(p)<0) ep.add.push(p);
+      if(ep.dz.indexOf(p)<0) ep.dz.push(p);        // 新参数默认设计期定死
+    }
+    saveMatrixEdit(); applyMatrixAndRender();
+  }
+  applyEdit();
+  buildHay();
+  // 搜索词：空格分隔 = 多词 AND
+  function qRaw(){ var el=document.getElementById('q'); return el?el.value.trim():''; }
+  function qMatch(hay){
+    var q=qRaw().toLowerCase();
+    if(!q) return true;
+    var ws=q.split(/\s+/);
+    for(var i=0;i<ws.length;i++){ if((hay||'').toLowerCase().indexOf(ws[i])<0) return false; }
+    return true;
+  }
+  function caseHayPass(c){ return qMatch(CASE_HAY[c.id]||''); }
+
+  function quickPass(c){
+    if(nOn(qf.dim)&&!qf.dim[c.dim]) return false;
+    if(nOn(qf.book)&&!qf.book[c.book]) return false;
+    if(nOn(qf.region)){
+      var r=c.region||'', ok=false;
+      if(qf.region['中国']&&r.indexOf('中国')>=0) ok=true;
+      if(qf.region['上海']&&r.indexOf('上海')>=0) ok=true;
+      if(qf.region['海外']&&r.indexOf('中国')<0) ok=true;
+      if(!ok) return false;
+    }
+    return true;
+  }
+  function casePass(c){
+    if(!quickPass(c)) return false;
+    if(!caseHayPass(c)) return false;
+    if(objLock && objLock.indexOf(c.id)<0) return false;
+    if(nOn(sel.s)&&!hasAny(sel.s,c.stressors)) return false;
+    if(nOn(sel.g)&&!hasAny(sel.g,c.envGroups)) return false;
+    if(nOn(sel.m)&&!hasAny(sel.m,c.measureGroups)) return false;
+    if(nOn(sel.o)&&!hasAny(sel.o,coOf(c))) return false;
+    // 「引导」二级：通道组内 OR、场景组内 OR、两组之间 AND
+    if(nOn(gsel.ch)&&!hasAny(gsel.ch,c.guideCh||[])) return false;
+    if(nOn(gsel.sc)&&!hasAny(gsel.sc,c.guideSc||[])) return false;
+    return true;
+  }
+  // 第 4 维是否还有效：若所选对象在当前其它条件下已无案例，计数为 0（仍显示但标零）
+  function countForObj(oid){
+    var n=0;
+    C.forEach(function(c){
+      if(coOf(c).indexOf(oid)<0) return;
+      if(!quickPass(c)||!caseHayPass(c)) return;
+      if(objLock && objLock.indexOf(c.id)<0) return;
+      if(nOn(sel.s)&&!hasAny(sel.s,c.stressors)) return;
+      if(nOn(sel.g)&&!hasAny(sel.g,c.envGroups)) return;
+      if(nOn(sel.m)&&!hasAny(sel.m,c.measureGroups)) return;
+      if(nOn(sel.o)&&!sel.o[oid]) return;
+      if(nOn(gsel.ch)&&!hasAny(gsel.ch,c.guideCh||[])) return;
+      if(nOn(gsel.sc)&&!hasAny(gsel.sc,c.guideSc||[])) return;
+      n++;
+    });
+    return n;
+  }
+  // 「引导」二级的计数（通道 / 场景各一个）
+  function countForGuide(kind,key){
+    var n=0;
+    C.forEach(function(c){
+      var arr = kind==='ch' ? (c.guideCh||[]) : (c.guideSc||[]);
+      if(arr.indexOf(key)<0) return;
+      if(!quickPass(c)||!caseHayPass(c)) return;
+      if(objLock && objLock.indexOf(c.id)<0) return;
+      if(nOn(sel.s)&&!hasAny(sel.s,c.stressors)) return;
+      if(nOn(sel.g)&&!hasAny(sel.g,c.envGroups)) return;
+      if(nOn(sel.m)&&!hasAny(sel.m,c.measureGroups)) return;
+      if(nOn(sel.o)&&!hasAny(sel.o,coOf(c))) return;
+      var other = kind==='ch' ? gsel.sc : gsel.ch;
+      var oArr  = kind==='ch' ? (c.guideSc||[]) : (c.guideCh||[]);
+      if(nOn(other)&&!hasAny(other,oArr)) return;
+      n++;
+    });
+    return n;
+  }
+  // 从空间矩阵点「相关案例」跳过来：清掉既有条件，只锁这一批案例
+  function setObjCases(oid){
+    var o=MOIX[oid]; if(!o) return;
+    sel={s:{},g:{},m:{},o:{}}; gsel={ch:{},sc:{}}; qf={dim:{},book:{},region:{}};
+    var qi=document.getElementById('q'); if(qi) qi.value='';
+    objLock=o.cases.slice();
+    mxHL=null; mxObj=oid;
+    render();
+    toast(lang==='en'
+      ? 'Locked to the '+o.cases.length+' cases of '+o.name
+      : '已锁定「'+o.name+'」的 '+o.cases.length+' 个案例');
+  }
+  function mGPass(g){
+    if(nOn(sel.m)&&!sel.m[g.id]) return false;
+    if(nOn(sel.g)&&!hasAny(sel.g,g.envGroups)) return false;
+    if(nOn(sel.s)){
+      var ok=false;
+      for(var i=0;i<g.cases.length;i++){ var c=CIX[g.cases[i]];
+        if(c&&hasAny(sel.s,c.stressors)){ok=true;break;} }
+      if(!ok) return false;
+    }
+    return true;
+  }
+  function envPass(g){
+    if(nOn(sel.g)&&!sel.g[g.id]) return false;
+    if(nOn(sel.s)&&!hasAny(sel.s,g.stressors)) return false;
+    if(nOn(sel.m)&&!mHasAny(g.measures,sel.m)) return false;
+    return true;
+  }
+  function matchCases(){ return C.filter(casePass); }
+
+  // 除指定维度外，其余条件是否全部通过 —— 用于各维「当前条件下的案例数」
+  // skip 取值：'s' 胁迫因子 / 'g' 环境因子 / 'm' 措施 / 'o' 空间对象 / 'gc' 引导通道 / 'gs' 引导场景
+  function passExcept(c,skip){
+    if(!quickPass(c)||!caseHayPass(c)) return false;
+    if(objLock && objLock.indexOf(c.id)<0) return false;
+    if(skip!=='s' && nOn(sel.s) && !hasAny(sel.s,c.stressors)) return false;
+    if(skip!=='g' && nOn(sel.g) && !hasAny(sel.g,c.envGroups)) return false;
+    if(skip!=='m' && nOn(sel.m) && !hasAny(sel.m,c.measureGroups)) return false;
+    if(skip!=='o' && nOn(sel.o) && !hasAny(sel.o,coOf(c))) return false;
+    if(skip!=='gc' && nOn(gsel.ch) && !hasAny(gsel.ch,c.guideCh||[])) return false;
+    if(skip!=='gs' && nOn(gsel.sc) && !hasAny(gsel.sc,c.guideSc||[])) return false;
+    return true;
+  }
+  function countForStressor(sid){
+    var n=0; C.forEach(function(c){
+      if(!c.stressors||c.stressors.indexOf(sid)<0) return;
+      if(passExcept(c,'s')) n++; });
+    return n;
+  }
+  function countForEnv(gid){
+    var n=0; C.forEach(function(c){
+      if(c.envGroups.indexOf(gid)<0) return;
+      if(passExcept(c,'g')) n++; });
+    return n;
+  }
+  function countForMG(gid){
+    var n=0; C.forEach(function(c){
+      if((c.measureGroups||[]).indexOf(gid)<0) return;
+      if(passExcept(c,'m')) n++; });
+    return n;
+  }
+  function relevantEnv(){
+    var set={};
+    for(var k in sel.s){ var s=null;
+      for(var i=0;i<S.length;i++){if(S[i].id===k)s=S[i];}
+      if(s) s.envGroups.forEach(function(x){set[x]=1;});
+    }
+    return set;
+  }
+
+  function optRow(dim,id,zh,en,n,extra){
+    var on = sel[dim][id];
+    var kico = (extra&&extra.kn)
+      ? '<span class="knb-ico" data-kn="'+esc(id)+'" title="'+
+        (lang==='en'?'View knowledge notes':'查看知识卡')+'">'+extra.kn+'</span>' : '';
+    return '<div class="opt'+(on?' on':'')+(n===0?' zero':'')+
+      '" data-d="'+dim+'" data-id="'+esc(id)+'"><span class="bx"></span>'+
+      '<span class="lb">'+dual(zh,en)+'</span>'+
+      (extra&&extra.kind?'<span class="kind">'+
+        esc(lang==='en'?((I.kindEn||{})[extra.kind]||extra.kind):extra.kind)+'</span>':'')+
+      (extra&&extra.meta?extra.meta:'')+
+      kico+
+      '<span class="c">'+n+'</span></div>';
+  }
+
+  // ① 气候胁迫因子 —— 严格 6 类，不再分「命题 / 补充」，不再显示来源标记
+  function renderColStress(){
+    var h='<div class="ch" data-f="s"><span class="tri">▼</span>'+
+      dual('① 气候胁迫因子','① Climate Stressor')+'<span class="n">'+nOn(sel.s)+' / '+S.length+
+      '</span></div><div class="cbody">';
+    var shown=S.filter(function(s){ return qMatch(s.name+' '+(s.nameEn||'')); });
+    if(!shown.length) return h+'<div class="empty">'+dual('无匹配项','No match')+'</div></div>';
+    h+='<div class="grp">'+dual('六类气候胁迫因子','Six climate stressors')+'</div>';
+    shown.forEach(function(s){ h+=optRow('s',s.id,s.name,s.nameEn,countForStressor(s.id),{}); });
+    return h+'</div>';
+  }
+
+  function renderColEnv(){
+    var rel=relevantEnv(), onlyRel=document.getElementById('rel').checked && nOn(sel.s);
+    var showSub=document.getElementById('knsub').checked;
+    var h='<div class="ch" data-f="g"><span class="tri">▼</span>'+
+      dual('② 基础环境因子（大类）','② Environmental Factor (group)')+
+      '<span class="n">'+nOn(sel.g)+'</span></div><div class="cbody">';
+    var layers=[['physical',lang==='en'?'Physical layer':'物理层面'],
+                ['experiential',lang==='en'?'Experiential layer':'体验层面']];
+    layers.forEach(function(L){
+      var lst=G.filter(function(g){ return g.layer===L[0]; });
+      var o='<div class="grp">'+L[1]+'</div>', any=false;
+      lst.forEach(function(g){
+        if(!qMatch(g.zh+' '+(g.en||''))) return;
+        var isRel = rel[g.id];
+        if(onlyRel && !isRel) return;
+        any=true;
+        o+=optRow('g',g.id,g.zh,g.en,countForEnv(g.id),
+                  g.n_kn?{kn:g.n_kn}:{});
+        if(showSub && g.itemsZh){
+          var ien=g.itemsEn||[];
+          g.itemsZh.forEach(function(it,i){
+            var en=ien[i]||'';
+            if(it.indexOf('—')===0){
+              o+='<div class="ksep">'+dual(it.replace(/—/g,'').trim(), en.replace(/—/g,'').trim())+'</div>';
+              return;
+            }
+            var k=knorm(it), has=!!KN[k];
+            o+='<div class="kni'+(has?' has':'')+'"'+(has?' data-knkey="'+esc(k)+'"':'')+'>'+
+               '<span class="dot"></span>'+
+               '<span class="klb">'+dual(it.replace(/^★/,''), en.replace(/^★/,''))+'</span>'+
+               (/^★/.test(it)?'<span class="star">★</span>':'')+'</div>';
+          });
+        }
+      });
+      if(any) h+=o;
+    });
+    if(onlyRel) h+='<div class="grp">'+(lang==='en'
+      ? 'Filtered by selected stressors ('+Object.keys(rel).length+' related)'
+      : '已按所选胁迫因子过滤显示（'+Object.keys(rel).length+' 类相关）')+'</div>';
+    return h+'</div>';
+  }
+
+  /* ---- 「引导」二级面板：感官通道 × 目标场景（Q19-D）---- */
+  function guidePanel(){
+    var h='<div class="gpanel">';
+    h+='<span class="gl">'+dual('感官通道（组内 OR）','Sensory channel (OR within)')+'</span>';
+    GCH.forEach(function(x){
+      var on=gsel.ch[x.key], n=countForGuide('ch',x.key);
+      h+='<span class="gc'+(on?' on':'')+'" data-gc="ch" data-gk="'+esc(x.key)+'" title="'+
+         esc(lang==='en'?'cases under current filter':'当前条件下的案例数')+'">'+
+         dual(x.zh,x.en)+'<i>'+n+'</i></span>';
+    });
+    h+='<span class="gl" style="margin-top:5px">'+dual('目标场景（组内 OR）','Target scenario (OR within)')+'</span>';
+    var chs=Object.keys(gsel.ch);
+    GSC.forEach(function(x){
+      var on=gsel.sc[x.key], n=countForGuide('sc',x.key);
+      // 已选通道对该场景「全部无据」→ 置灰不可选（这就是 5×6 矩阵里的 ✗ 格）
+      var blocked=false;
+      if(chs.length){ blocked=true; chs.forEach(function(ck){ if(gOK(ck,x.key)) blocked=false; }); }
+      h+='<span class="gc'+(on?' on':'')+(blocked?' off':'')+'"'+
+         (blocked?'':' data-gc="sc" data-gk="'+esc(x.key)+'"')+
+         ' title="'+esc(blocked
+            ? (lang==='en'?'No evidence for the selected channel(s) on this scenario':'所选通道对该场景无实证，已置灰')
+            : (lang==='en'?'cases under current filter':'当前条件下的案例数'))+'">'+
+         dual(x.zh,x.en)+'<i>'+n+'</i></span>';
+    });
+    h+='<div style="font-size:10.5px;color:var(--purple800);margin-top:2px;line-height:1.5">'+dual(
+      '实证缺口：雨水会冲刷气味、强风会稀释气味、避雨与避风场景无温差可用、触觉难以表达干湿 —— 这几格不成立，故置灰。',
+      'Evidence gaps: rain washes scent away, strong wind dilutes it, no temperature difference exists in rain or wind shelter, and touch cannot convey dryness — those cells are greyed out.')+
+      '</div>';
+    h+='<div style="margin-top:4px"><span class="gc" data-gclr="1">'+dual('清空引导筛选','Clear guidance filter')+'</span></div>';
+    return h+'</div>';
+  }
+
+  /* ---- 附注区：技术支撑 / 运营治理（不参与筛选，Q3-A + Q13-A 默认收起）---- */
+  function noteSection(){
+    var h='<div class="notesec"><button class="notebtn'+(noteOpen?' open':'')+'" data-note="1">'+
+      '<span class="tri">▶</span>'+
+      dual('附注区 · 技术支撑 / 运营治理（'+NOTE_MG.length+' 类，不参与筛选）',
+           'Notes · technical support / operations & governance ('+NOTE_MG.length+', not filterable)')+
+      '</button>';
+    if(noteOpen){
+      h+='<div class="notebody">';
+      ['N','D'].forEach(function(p){
+        var lst=NOTE_MG.filter(function(g){ return g.path===p; });
+        if(!lst.length) return;
+        h+='<div class="grp">'+esc(lang==='en'?((I.pathEn||{})[p]||p):lst[0].path_name)+'</div>';
+        lst.forEach(function(g){
+          var subs=g.items.map(function(x){ return esc(lang==='en'?(x.nameEn||x.name):x.name); }).join(' · ');
+          h+='<div class="nrow"><b>'+dual(g.name,g.nameEn)+'</b>'+
+             '<em>'+dual(g.desc,g.descEn)+'</em>'+
+             '<span style="color:#8b95a1;font-size:10.5px">'+subs+'</span></div>';
+        });
+      });
+      h+='</div>';
+    }
+    return h+'</div>';
+  }
+
+  // ③ 干预策略 —— 主表只显示 P/B/C 三类；N/D 进附注区
+  function renderColMeasure(){
+    var showSub=document.getElementById('sub').checked;
+    var h='<div class="ch" data-f="m"><span class="tri">▼</span>'+
+      dual('③ 干预策略（大类）','③ Intervention Strategy (group)')+
+      '<span class="n">'+nOn(sel.m)+' / '+MAIN_MG.length+'</span></div><div class="cbody">';
+    ['P','B','C'].forEach(function(p){
+      var lst=MAIN_MG.filter(function(m){ return m.path===p; });
+      var shown=lst.filter(function(m){
+        return qMatch(m.name+' '+(m.nameEn||'')+' '+(m.desc||'')+' '+(m.descEn||'')+' '+
+          m.items.map(function(x){return x.name+' '+(x.nameEn||'');}).join(' '));
+      });
+      if(!shown.length) return;
+      var pn = lang==='en' ? (I.pathEn[p]||shown[0].path_name) : shown[0].path_name;
+      h+='<div class="grp">'+esc(pn)+'　'+shown.length+(lang==='en'?' groups':' 个大类')+'</div>';
+      shown.forEach(function(m){
+        h+=optRow('m',m.id,m.name,m.nameEn,countForMG(m.id),{});
+        if(m.id==='C01'){
+          h+='<div class="mxsub" style="padding:0 9px 2px">'+dual(
+            '含 5 个感官通道 × 6 个目标场景：通道组内 OR、场景组内 OR、两组 AND。',
+            'Five sensory channels × six target scenarios — OR within a group, AND across groups.')+'</div>';
+          if(gOpen||nOn(gsel.ch)||nOn(gsel.sc)){
+            h+='<div style="padding-left:10px;margin-bottom:3px"><button class="notebtn open" data-gopen="1" style="display:inline-flex;width:auto">'+
+               '<span class="tri">▶</span>'+dual('收起通道 × 场景','Hide channel × scenario')+'</button></div>';
+            h+=guidePanel();
+          } else {
+            h+='<div style="padding-left:10px"><button class="notebtn" data-gopen="1" style="display:inline-flex;width:auto">'+
+               '<span class="tri">▶</span>'+dual('展开通道 × 场景筛选','Open channel × scenario filter')+'</button></div>';
+          }
+        }
+        if(showSub){
+          var sub = lang==='en'
+            ? m.items.map(function(x){return x.nameEn||x.name;}).join(' · ')
+            : m.items.map(function(x){return x.name;}).join(' · ');
+          h+='<div class="sub2">'+esc(sub)+'</div>';
+        }
+      });
+    });
+    h+=noteSection();
+    return h+'</div>';
+  }
+
+  /* ---- ④ 空间对象（含可调参数）---- */
+  var OBJ_GROUPS=[
+    ['遮蔽与界面',['O01','O06','O12','O07','O17','O26'],'Shelter & interface'],
+    ['绿化与水体',['O02','O03','O10'],'Planting & water'],
+    ['停留与家具',['O04','O14','O09','O25'],'Dwelling & furniture'],
+    ['地面与路径',['O05','O08','O18','O21','O22'],'Ground & route'],
+    ['风与开口',['O11','O15'],'Wind & openings'],
+    ['温控设备',['O23','O24'],'Climate-control devices'],
+    ['尺度与事件',['O16','O19','O20'],'Scale & events'],
+    ['光',['O13'],'Light']
+  ];
+  function renderColObj(){
+    var h='<div class="ch" data-f="o"><span class="tri">▼</span>'+
+      dual('④ 空间对象（含可调参数）','④ Spatial Object (with parameters)')+
+      '<span class="n">'+nOn(sel.o)+' / '+MO.length+'</span></div><div class="cbody">';
+    var shown=MO.filter(function(o){
+      return qMatch(o.name+' '+(o.nameEn||'')+' '+(o.desc||'')+' '+(o.descEn||'')+' '+
+        o.params.join(' ')+' '+o.paramsEn.join(' '));
+    });
+    if(!shown.length) return h+'<div class="empty">'+dual('无匹配项','No match')+'</div></div>';
+    var hit={};
+    OBJ_GROUPS.forEach(function(grp){
+      var lst=shown.filter(function(o){ return grp[1].indexOf(o.id)>=0; });
+      if(!lst.length) return;
+      lst.forEach(function(o){ hit[o.id]=1; });
+      h+='<div class="grp">'+dual(grp[0],grp[2])+'　'+lst.length+'</div>';
+      lst.forEach(function(o){
+        var tip=dual('参数：','Parameters: ')+(lang==='en'?o.paramsEn.join('、'):o.params.join('、'))+'　｜　'+
+                dual('运行中可调 ','adjustable ')+o.n_runtime+' / '+o.n_param+'　｜　'+
+                dual('相关案例 ','cases ')+o.n_case;
+        var meta='<span class="nq" title="'+esc(tip)+'">'+o.n_runtime+'/'+o.n_param+'</span>';
+        h+=optRow('o',o.id,o.name,o.nameEn,countForObj(o.id),{meta:meta});
+      });
+    });
+    var miss=shown.filter(function(o){ return !hit[o.id]; });
+    miss.forEach(function(o){
+      h+=optRow('o',o.id,o.name,o.nameEn,countForObj(o.id),
+                {meta:'<span class="nq" title="'+esc(dual('参数：','Parameters: ')+o.params.join('、'))+'">'+
+                      o.n_runtime+'/'+o.n_param+'</span>'});
+    });
+    return h+'</div>';
+  }
+
+  /* ==================== 案例查询区 ==================== */
+  var QF_DIM=[['Interaction','交互','Interaction'],['Climate','气候','Climate'],
+              ['Street Products','街道产品','Street Products'],['Vision Tech','视觉技术','Vision Tech']];
+  var QF_BOOK=[['命题给定','命题给定','By the brief'],['自主检索','自主检索','Self-researched'],
+               ['小组','小组新增','Group'],['缺口补充','缺口补充','Gap-fill'],
+               ['多感官补充','多感官补充','Multisensory']];
+  var QF_REG=[['中国','中国','China'],['上海','上海','Shanghai'],['海外','海外','Overseas']];
+  function qfN(kind,v){
+    var n=0;
+    C.forEach(function(c){
+      var r=c.region||'';
+      if(kind==='dim'&&c.dim===v) n++;
+      else if(kind==='book'&&c.book===v) n++;
+      else if(kind==='region'){
+        if(v==='中国'&&r.indexOf('中国')>=0) n++;
+        else if(v==='上海'&&r.indexOf('上海')>=0) n++;
+        else if(v==='海外'&&r.indexOf('中国')<0) n++;
+      }
+    });
+    return n;
+  }
+  function qfRow(kind,list,lzh,len){
+    var h='<div class="cqrow"><span class="cqk">'+dual(lzh,len)+'</span><span class="cqg">';
+    list.forEach(function(it){
+      h+='<span class="cqb'+(qf[kind][it[0]]?' on':'')+'" data-qf="'+kind+'" data-qv="'+esc(it[0])+'">'+
+         dual(it[1],it[2])+'<span class="n">'+qfN(kind,it[0])+'</span></span>';
+    });
+    return h+'</span></div>';
+  }
+  function qfPanel(){
+    var hasQ = !!qRaw() || nOn(qf.dim) || nOn(qf.book) || nOn(qf.region);
+    var h='<div class="cqp"><div class="cqr">'+
+      '<input type="search" id="cq" placeholder="'+(lang==='en'
+        ?'Search cases: name / place / summary / data / any tag'
+        :'搜案例：名称 / 地区 / 概括 / 关键数据 / 任意标签')+'" value="'+esc(qRaw())+'">'+
+      (hasQ?'<button id="cqclr">'+dual('重置查询','Reset query')+'</button>':'')+
+      '</div>'+
+      qfRow('dim',QF_DIM,'维度','Dimension')+
+      qfRow('book',QF_BOOK,'来源','Source')+
+      qfRow('region',QF_REG,'地区','Region');
+    var n=C.filter(function(c){ return quickPass(c)&&caseHayPass(c); }).length;
+    h+='<div class="cqhint">'+dual('命中','Matching')+' <b style="color:#185fa5;font-size:13.5px">'+n+'</b>'+
+       ' / '+C.length+dual(' 个案例',' cases')+
+       (hasQ?'':dual('　（未设条件，显示全部）','　(no query — all shown)'))+'</div>';
+    return h+'</div>';
+  }
+
+  /* ==================== 空间矩阵（机制轴） ==================== */
+  // 参数 → 可调性查询表（构建一次；RT_SET/DZ_SET 是模块级，pchip 靠它上色）
+  var RT_SET={}, DZ_SET={};
+  // 内置基线（编辑后回溯用；RT_SET0/DZ_SET0 永不被编辑覆盖）
+  var RT_SET0={}, DZ_SET0={}, PARAM_EN_ALL={};
+  MO.forEach(function(o){
+    (o.runtime||[]).forEach(function(p){RT_SET[p]=1; RT_SET0[p]=1;});
+    (o.design||[]).forEach(function(p){DZ_SET[p]=1; DZ_SET0[p]=1;});
+    o.params.forEach(function(p,i){ if(!PARAM_EN_ALL[p]) PARAM_EN_ALL[p]=o.paramsEn[i]; });
+  });
+  PC.forEach(function(c){
+    c.vars.forEach(function(v,i){ if(!PARAM_EN_ALL[v]) PARAM_EN_ALL[v]=c.varsEn[i]; });
+  });
+  // 加载时落地本机的矩阵改动（必须在 RT_SET0 / PARAM_EN_ALL 建好之后，
+  // 否则 applyMatrixEdit 里读 PARAM_EN_ALL / RT_SET0 会拿到 undefined）
+  applyMatrixEdit();
+  rebuildParamSets();
+  function pchip(p, en){
+    return '<span class="pchip '+(RT_SET[p]?'rt':'dz')+'">'+esc(p)+
+      (en&&en!==p?'<em>'+esc(en)+'</em>':'')+'</span>';
+  }
+
+  function matrixRows(){
+    var op = qRaw();
+    return MO.filter(function(o){
+      if(!op) return true;
+      var hay=[o.name,o.nameEn,o.desc,o.descEn].concat(o.params,o.paramsEn).join(' ').toLowerCase();
+      var ws=op.toLowerCase().split(/\s+/);
+      for(var i=0;i<ws.length;i++){ if(hay.indexOf(ws[i])<0) return false; }
+      return true;
+    });
+  }
+
+  /* ---- 矩阵编辑用的小组件 ---- */
+  // 参数芯片（编辑态）：带 × 删除、带「调/固」切换可调性
+  function pchipEd(o,p,en){
+    var isRt = o.runtime.indexOf(p)>=0;
+    var tDel = lang==='en'?'Remove this parameter':'删除这个参数';
+    var tTog = lang==='en'
+      ? (isRt?'Currently adjustable at runtime — click to mark as design-stage fixed'
+             :'Currently fixed at design stage — click to mark as adjustable at runtime')
+      : (isRt?'当前为「运行中可调」—— 点一下改为「设计期定死」'
+             :'当前为「设计期定死」—— 点一下改为「运行中可调」');
+    return '<span class="pchip '+(isRt?'rt':'dz')+' ed" data-mxp="'+esc(p)+'" data-oid="'+o.id+'" title="'+
+      esc(tTog)+'">'+esc(p)+
+      (en&&en!==p?'<em>'+esc(en)+'</em>':'')+
+      '<b class="rtg" data-mxtog="'+esc(p)+'" data-oid="'+o.id+'">'+(isRt?dual('调','RT'):dual('固','FIX'))+'</b>'+
+      '<b class="px" data-mxdelp="'+esc(p)+'" data-oid="'+o.id+'" title="'+esc(tDel)+'">×</b></span>';
+  }
+  // 措施标签（编辑态）：带 × 删除
+  function mlinkEd(oid,mid){
+    var g=MGIX[mid]; if(!g) return '';
+    var t=lang==='en'?'Unmap this measure group from the object':'解除这个措施大类与该对象的映射';
+    return '<span class="mlink ed" data-mxdelm="'+esc(mid)+'" data-oid="'+oid+'" title="'+esc(t)+'">'+
+      dual(g.name,g.nameEn)+' <b class="px" style="margin-left:2px">×</b></span>';
+  }
+  // 候选面板：给某个对象补参数 / 补措施
+  function mxPickPanel(o,kind){
+    var h='<div class="mxpick"><div class="pkt">'+
+      (kind==='p'?dual('可添加的参数变量','Parameters to add')
+                 :dual('可添加的措施大类','Measure groups to add'))+
+      '<em>'+(lang==='en'?'click to add':'点一下即添加')+'</em></div><div class="pkg">';
+    var n=0;
+    if(kind==='p'){
+      // 候选 = 全库参数词（矩阵 + 参数库）里该对象还没有的
+      var seen={};
+      var pool=[];
+      MO.forEach(function(x){ x._baseParams.forEach(function(p){ if(!seen[p]){seen[p]=1;pool.push(p);} }); });
+      PC.forEach(function(c){ c.vars.forEach(function(v){ if(!seen[v]){seen[v]=1;pool.push(v);} }); });
+      pool.sort();
+      pool.forEach(function(p){
+        if(o.params.indexOf(p)>=0) return;
+        n++;
+        h+='<span class="pkb" data-mxaddp="'+esc(p)+'" data-oid="'+o.id+'">'+
+           esc(p)+(PARAM_EN_ALL[p]&&PARAM_EN_ALL[p]!==p?'<em>'+esc(PARAM_EN_ALL[p])+'</em>':'')+'</span>';
+      });
+    } else {
+      MG.forEach(function(g){
+        if(o.measures.indexOf(g.id)>=0) return;
+        n++;
+        h+='<span class="pkb" data-mxaddm="'+esc(g.id)+'" data-oid="'+o.id+'">'+
+           dual(g.name,g.nameEn)+'<em>'+(lang==='en'?g.n_case+' cases':g.n_case+' 例')+'</em></span>';
+      });
+    }
+    if(!n) h+='<span class="pkb none">'+(lang==='en'?'nothing left to add':'已全部加入')+'</span>';
+    h+='</div>';
+    if(kind==='p'){
+      h+='<div class="mximput"><input type="text" id="mxnew" data-oid="'+o.id+
+         '" placeholder="'+(lang==='en'?'or type a new parameter…':'或直接输入新参数…')+
+         '"><button data-mxnewp="1" data-oid="'+o.id+'">'+dual('加入','Add')+'</button></div>';
+    }
+    h+='<button class="ebtn done" data-mxopen="close">'+dual('完成','Done')+'</button></div>';
+    return h;
+  }
+
+  function renderMatrix(){
+    var nRt = Object.keys(RT_SET).length, nDz = Object.keys(DZ_SET).length;
+    var nPar = nRt + nDz;
+    var h='<div class="mxsec" style="margin-top:0">'+dual(
+        '空间变量矩阵 · 机制轴','Spatial Variable Matrix · Mechanism Axis')+
+      '<em>'+dual('组员维度 · 与气候轴互补','group member dimension · complementary to the climate axis')+'</em></div>';
+    h+='<div class="mxsub">'+dual(
+      '这一侧回答「我能改什么参数、改了会在人身上发生什么」。点「措施大类」跳到措施页，点「案例数」跳到案例页，左侧四列回答「热在哪里、该怎么改、谁做过」。',
+      'This side answers "which parameters can I change, and what happens to people if I do". Click a measure group to jump to the measures tab, a case count to jump to the cases tab; the four columns on the left answer "where is it hot, how should it change, and who has done it".')+'</div>';
+    // 概览数字
+    h+='<div class="qbar" style="margin-bottom:10px">'+
+      '<b>'+MO.length+'</b>'+dual(' 个空间对象',' spatial objects')+' ｜ '+
+      '<b>'+nPar+'</b>'+dual(' 个参数变量',' parameter variables')+' ｜ '+
+      '<b style="color:#0f6e56">'+nRt+'</b>'+dual(' 个运行中可调',' adjustable at runtime')+' ｜ '+
+      '<b>'+nDz+'</b>'+dual(' 个设计期定死',' fixed at design stage')+' ｜ '+
+      '<b>'+FB.length+'</b>'+dual(' 步反馈闭环',' feedback-loop steps')+
+      '</div>';
+    h+='<div class="hint" style="margin-bottom:10px">'+dual(
+      '「运行中可调」指不施工、不换件即可随环境或人的状态改变 —— 这是本项目第八章指出的薄弱环节：物理干预一栏普遍缺少这一类构件。',
+      '"Adjustable at runtime" means it can change with the environment or with people\'s state without construction or parts replacement — the weak link identified in chapter 8 of this project: the physical-intervention column generally lacks components of this kind.')+'</div>';
+    if(editMode){
+      h+='<div class="ebar" style="display:flex;margin:0 0 10px">'+
+        '<b>'+dual('编辑空间矩阵','Editing the matrix')+'</b>'+
+        '<span>'+(lang==='en'
+          ? mxTouched()+' object(s) modified'
+          : '已修改 '+mxTouched()+' 个对象')+'</span>'+
+        '<em>'+(lang==='en'
+          ? 'Click the RT/FIX badge on a parameter to flip its adjustability; click × to remove; ＋ to add parameters or measures. Case counts re-derive automatically from the measures.'
+          : '点参数上的「调/固」徽标切换可调性，点 × 删除，点 ＋ 添加参数或措施。案例数会按措施自动重新派生。')+'</em>'+
+        '<button id="mxexp">'+dual('导出矩阵 JSON','Export matrix JSON')+'</button>'+
+        '<button id="mximp">'+dual('导入矩阵 JSON','Import matrix JSON')+'</button>'+
+        '<button id="mxrst">'+dual('还原矩阵','Restore matrix')+'</button>'+
+        '</div>';
+    }
+
+    var rows=matrixRows();
+    if(!rows.length){
+      h+='<div class="empty">'+dual('没有匹配的空间对象','No matching spatial objects')+'</div>';
+      return h;
+    }
+    h+='<div class="mxwrap"><table class="mx"><thead><tr>'+
+      '<th>'+dual('空间对象','Spatial object')+'<em>'+dual(MO.length+' 个',MO.length+' objects')+'</em></th>'+
+      '<th>'+dual('可控参数（可以怎么变）','Controllable parameters')+
+        '<em>'+(editMode
+          ? dual('点「调/固」改可调性　点 × 删除','click RT/FIX to toggle　× to remove')
+          : dual('绿=运行中可调　灰=设计期定死','green = runtime　grey = design-stage'))+'</em></th>'+
+      '<th>'+dual('可调性','Adjustability')+
+        '<em>'+dual('可调项数 / 参数总数','adjustable / total')+'</em></th>'+
+      '<th>'+dual('关联','Links')+'<em>'+(editMode
+          ? dual('点 × 解除映射','click × to unmap')
+          : dual('措施大类 / 案例','measure groups / cases'))+'</em></th>'+
+      '</tr></thead><tbody>';
+    rows.forEach(function(o){
+      var touched = (MX.params&&MX.params[o.id]) || (MX.objMeas&&MX.objMeas[o.id]);
+      h+='<tr data-obj="'+o.id+'"'+(mxHL===o.id?' class="mxhl"':'')+
+        (touched?' class="mxed"':'')+'><td class="obj">'+dual(o.name,o.nameEn)+
+        '<div class="sub2">'+(lang==='en'?esc(o.descEn||o.desc):esc(o.desc))+'</div></td>';
+      h+='<td>';
+      o.params.forEach(function(p,i){
+        h+= editMode ? pchipEd(o,p,o.paramsEn[i]) : pchip(p,o.paramsEn[i]);
+      });
+      if(editMode){
+        if(!o.params.length) h+='<span class="pchip dash">'+dual('（无参数）','(none)')+'</span>';
+        var op = mxOpen && mxOpen.oid===o.id;
+        h+='<div class="xbtns">'+
+          '<button class="xbtn'+(op&&mxOpen.kind==='p'?' on':'')+'" data-mxopen="p" data-oid="'+o.id+'">'+
+            (op&&mxOpen.kind==='p'?'▲ ':'＋ ')+dual('参数','parameter')+'</button>'+
+          '<button class="xbtn'+(op&&mxOpen.kind==='m'?' on':'')+'" data-mxopen="m" data-oid="'+o.id+'">'+
+            (op&&mxOpen.kind==='m'?'▲ ':'＋ ')+dual('措施','measure')+'</button>'+
+          '</div>';
+        if(op) h+= mxPickPanel(o, mxOpen.kind);
+      }
+      h+='</td>';
+      h+='<td class="adjust" style="white-space:nowrap">'+
+        '<b class="rt" style="font-size:15px">'+o.n_runtime+'</b><span style="color:#8b95a1"> / '+o.n_param+'</span>'+
+        '<em style="display:block;font-style:normal;color:#8b95a1">'+
+        dual('可调 / 共','adjustable / total')+'</em></td>';
+      h+='<td>';
+      o.measures.forEach(function(mid){
+        if(editMode){ if(MGIX[mid]) h+=mlinkEd(o.id,mid); return; }
+        var g=MGIX[mid]; if(!g) return;
+        h+='<span class="mlink" data-gom="'+esc(mid)+'">'+dual(g.name,g.nameEn)+'</span>';
+      });
+      if(!o.n_measure) h+='<span class="mxsub">'+dual('无映射','not mapped')+'</span>';
+      h+='<div style="margin-top:3px"><span class="clink'+(o.n_case?'':' zero')+'"'+
+        (o.n_case&&!editMode?' data-goc="'+o.id+'"':'')+'>'+
+        dual('相关案例 ','cases ')+o.n_case+'</span></div>';
+      h+='</td></tr>';
+    });
+    h+='</tbody></table></div>';
+    // 参数库
+    h+='<div class="mxsec">'+dual('可控参数库 12 类','Parameter Library, 12 categories')+
+      '<em>'+dual('把参数按性质归拢，跨对象通用','grouped by nature, shared across objects')+'</em></div>';
+    h+='<div class="mxwrap"><table class="pc"><thead><tr>'+
+      '<th>'+dual('参数类别','Category')+'</th>'+
+      '<th>'+dual('参数变量','Variables')+'</th>'+
+      '<th>'+dual('适用对象','Applies to')+'</th></tr></thead><tbody>';
+    PC.forEach(function(c){
+      h+='<tr><td class="k">'+dual(c.name,c.nameEn)+'</td><td>';
+      c.vars.forEach(function(v,i){ h+=pchip(v,c.varsEn[i]); });
+      h+='</td><td style="color:#5b6470">'+dual(c.applies,c.appliesEn)+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+    // 反馈闭环
+    h+='<div class="mxsec">'+dual('人—环境—空间反馈闭环 7 步','People—Environment—Space Feedback Loop, 7 Steps')+
+      '<em>'+dual('与「感知—计算—反馈」技术目标链对齐','aligned with the sensing—computation—feedback chain')+'</em></div>';
+    h+='<div class="fbwrap"><table class="fb"><thead><tr>'+
+      '<th>'+dual('环节','Step')+'</th>'+
+      '<th>'+dual('信息内容','Information')+'</th>'+
+      '<th>'+dual('数据 / 技术来源','Data / technology source')+'</th>'+
+      '<th>'+dual('对应矩阵模块','Matrix module')+'</th>'+
+      '<th>'+dual('延迟预算','Latency budget')+'</th></tr></thead><tbody>';
+    FB.forEach(function(f){
+      h+='<tr><td class="st"><i>'+f.step+'</i>'+dual(f.name,f.nameEn)+'</td>'+
+        '<td>'+kb(f.info,f.infoEn)+'</td>'+
+        '<td>'+kb(f.src,f.srcEn)+'</td>'+
+        '<td style="white-space:nowrap">'+esc(lang==='en'?(f.fieldEn||f.field):f.field)+'</td>'+
+        '<td>'+kb(f.latency,f.latencyEn)+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+    h+='<div class="kdb">'+dual(
+      '数据来源：组员制作的《空间矩阵_.xlsx》三个工作表，与既有气候轴数据合并（措施→空间对象映射为手工表，案例数与胁迫因子由 71 案例库自动派生）。'+
+      '开启「编辑模式」后本页矩阵可改：参数可增删、可调性可切换、措施映射可增删，案例数会按措施自动重算。',
+      'Source: the three worksheets of the group member\'s Spatial Matrix.xlsx, merged with the existing climate-axis data (the measure-to-object mapping is a manual table; case counts and stressors are derived automatically from the 71-case library). '+
+      'With edit mode on, this matrix becomes editable: parameters can be added or removed, adjustability can be toggled, and measure mappings can be added or removed — case counts re-derive from the measures automatically.')+'</div>';
+    return h;
+  }
+
+  function renderResults(){
+    var cs=matchCases();
+    var ms=MG.filter(mGPass);
+    var gs=G.filter(envPass);
+    var h='';
+    h+='<div class="tabs">'+
+      '<button data-t="case" class="'+(tab==='case'?'on':'')+'">'+
+        dual('案例','Cases')+' <span>'+cs.length+'</span></button>'+
+      '<button data-t="matrix" class="'+(tab==='matrix'?'on':'')+'">'+
+        dual('空间矩阵','Spatial matrix')+' <span>'+MO.length+'</span></button>'+
+      '<button data-t="measure" class="'+(tab==='measure'?'on':'')+'">'+
+        dual('措施大类','Measure groups')+' <span>'+ms.length+'</span></button>'+
+      '<button data-t="env" class="'+(tab==='env'?'on':'')+'">'+
+        dual('环境因子','Env. factors')+' <span>'+gs.length+'</span></button>'+
+      '</div>';
+    if(tab==='matrix'){ h+=renderMatrix(); return h; }
+    if(tab==='case') h+=qfPanel();
+    if(tab==='case' && objLock && mxObj){
+      var oo=MOIX[mxObj];
+      h+='<div class="qbar"><b>'+dual('来自空间矩阵：','From the spatial matrix: ')+'</b>'+
+        dual(oo?oo.name:mxObj, oo?oo.nameEn:mxObj)+
+        '<em>'+dual('已锁定该空间对象的相关案例','locked to the cases of this spatial object')+'</em>'+
+        '<button data-unlock="1">'+dual('清除锁定','Clear lock')+'</button></div>';
+    }
+    if(!cs.length && tab==='case'){
+      h+='<div class="hint"><b>'+(lang==='en'?'No case matches this combination.'
+          :'这个组合没有案例。')+'</b> '+(lang==='en'
+          ? 'Either the taxonomy needs revisiting, or nobody has done it yet — and that second possibility is the opportunity. Try removing one condition.'
+          : '要么是分类口径的问题，要么就是还没人做 —— 后者正是选题机会。试着去掉一个条件看看。')+'</div>';
+    }
+    if(tab==='case'){
+      h+='<div class="res">';
+      cs.forEach(function(c){ h+=caseCard(c); });
+      if(!cs.length) h+='<div class="empty">'+(lang==='en'?'No matching cases. Current filter: '
+        :'无匹配案例。当前条件：')+
+        Object.keys(sel.s).map(sn).join(' / ')+' ｜ '+
+        Object.keys(sel.g).map(gn).join(' / ')+' ｜ '+
+        Object.keys(sel.m).map(mn).join(' / ')+' ｜ '+
+        Object.keys(sel.o).map(function(x){ return MOIX[x]?MOIX[x].name:x; }).join(' / ')+
+        (nOn(gsel.ch)||nOn(gsel.sc)
+          ? ' ｜ '+dual('引导：','Guidance: ')+
+            Object.keys(gsel.ch).map(gchN).concat(Object.keys(gsel.sc).map(gscN)).join(' + ')
+          : '')+
+        '</div>';
+      h+='</div>';
+    } else if(tab==='measure'){
+      h+='<div class="res">';
+      ms.sort(function(a,b){return b.n_case-a.n_case;}).forEach(function(m){
+        h+='<div class="mrow" data-mid="'+m.id+'"><b>'+dual(m.name,m.nameEn)+'</b>'+
+          '<em>'+dual(m.desc,m.descEn)+'</em>'+
+          '<span class="n">'+m.n_case+(lang==='en'?' cases':' 案例')+'</span></div>';
+        if(m.objects&&m.objects.length){
+          h+='<div class="mxsub" style="padding:0 9px 6px">'+
+            dual('作用的空间对象：','Spatial objects: ');
+          m.objects.forEach(function(oid){
+            var o=MOIX[oid]; if(!o) return;
+            h+='<span class="mlink" data-gomx="'+esc(oid)+'">'+dual(o.name,o.nameEn)+'</span>';
+          });
+          h+='</div>';
+        }
+      });
+      if(!ms.length) h+='<div class="empty">'+(lang==='en'?'No matching measures':'无匹配措施')+'</div>';
+      h+='</div>';
+    } else {
+      h+='<div class="res">';
+      gs.sort(function(a,b){return b.n_case-a.n_case;}).forEach(function(g){
+        h+='<div class="cc"><div class="t">'+dual(g.zh,g.en)+
+          (g.n_kn?'<span class="badge-kn">'+(lang==='en'?'notes '+g.n_kn:'知识卡 '+g.n_kn)+'</span>':'')+
+          '</div>'+
+          '<div class="md">'+esc(g.layer==='physical'
+            ?(lang==='en'?'Physical layer':'物理层面'):(lang==='en'?'Experiential layer':'体验层面'))+' · '+
+          g.n_item+(lang==='en'?' sub-items':' 项小类')+' · '+
+          (lang==='en'?'cases ':'案例 ')+g.n_case+' · '+
+          (lang==='en'?'measure groups ':'措施大类 ')+g.n_measure+'</div>'+
+          '<div class="tags">'+g.stressors.slice(0,8).map(function(x){
+            return '<span class="tg s">'+dual(sn(x),snEn(x))+'</span>';}).join('')+'</div></div>';
+      });
+      if(!gs.length) h+='<div class="empty">'+(lang==='en'?'No matching environmental factors':'无匹配环境因子')+'</div>';
+      h+='</div>';
+    }
+    return h;
+  }
+
+  function xBtn(kind,cid,fid,tip){
+    return '<b class="x" data-del="'+kind+'" data-cid="'+cid+'" data-fid="'+esc(fid)+
+      '" title="'+esc(tip)+'">×</b>';
+  }
+  function pickPanel(c,kind){
+    var has = kind==='s' ? (c.stressors||[]) : (c.envGroups||[]);
+    var all = kind==='s' ? S : G;
+    var h='<div class="pick"><div class="pkt">'+
+      (kind==='s'?dual('可添加的胁迫因子','Stressors to add')
+                 :dual('可添加的环境因子（大类）','Environmental factors to add'))+
+      '<em>'+(lang==='en'?'click to add':'点一下即添加')+'</em></div><div class="pkg">';
+    var n=0;
+    all.forEach(function(x){
+      if(has.indexOf(x.id)>=0) return;
+      n++;
+      h+='<span class="pkb" data-add="'+kind+'" data-cid="'+c.id+'" data-fid="'+esc(x.id)+'">'+
+         (kind==='s'?dual(x.name,x.nameEn):dual(x.zh,x.en))+'</span>';
+    });
+    if(!n) h+='<span class="pkb none">'+(lang==='en'?'all already linked':'已全部关联')+'</span>';
+    h+='</div><button class="ebtn done" data-add-open="close" data-cid="'+c.id+'">'+
+       dual('完成','Done')+'</button></div>';
+    return h;
+  }
+  function caseCard(c){
+    var tipD=lang==='en'?'Remove this link':'删除这个关联';
+    var h='<div class="cc'+(editMode?' ed':'')+'"><div class="t">'+dual(c.name,c.nameEn)+
+      (c.book==='小组'?'<span class="badge-new">'+(lang==='en'?'group':'小组新增')+'</span>':'')+
+      (c.book==='缺口补充'?'<span class="badge-gap">'+(lang==='en'?'gap fill':'缺口补充')+'</span>':'')+
+      (c.book==='多感官补充'?'<span class="badge-sense">'+(lang==='en'?'multisensory':'多感官补充')+'</span>':'')+
+      '</div>'+
+      '<div class="md">'+esc([c.dim,c.region,c.year,c.owner].filter(Boolean).join(' · '))+'</div>'+
+      '<div class="tags">';
+    (c.stressors||[]).forEach(function(s){
+      h+='<span class="tg s">'+dual(sn(s),snEn(s))+(editMode?xBtn('s',c.id,s,tipD):'')+'</span>';
+    });
+    if(!(c.stressors||[]).length)
+      h+='<span class="tg none" title="'+esc(dual('已删去空气污染与自补 8 类后，本例失去气候关联，按 Q1-B 保留在库、不参与筛选','After removing air pollution and the eight supplementary factors this case lost its climate link; kept in the library but excluded from filtering'))+'">'+
+        (lang==='en'?'no climate link (not filtered)':'未关联气候因子（不参与筛选）')+'</span>';
+    // 「引导」的通道 / 场景标签（C01 二级筛选的可视化）
+    (c.guideCh||[]).forEach(function(k){
+      h+='<span class="tg g" title="'+esc(dual('引导 · 感官通道','Guidance · sensory channel'))+'">'+
+        dual('引导·'+gchN(k),'Guide·'+gchEn(k))+'</span>'; });
+    (c.guideSc||[]).forEach(function(k){
+      h+='<span class="tg g" title="'+esc(dual('引导 · 目标场景','Guidance · target scenario'))+'">'+
+        dual('→'+gscN(k),'→'+gscEn(k))+'</span>'; });
+    if(editMode){
+      (c.envGroups||[]).forEach(function(g){
+        var G0=GIX[g];
+        h+='<span class="tg e">'+dual(G0?G0.zh:g,G0?G0.en:'')+xBtn('g',c.id,g,tipD)+'</span>';
+      });
+      if(!(c.envGroups||[]).length)
+        h+='<span class="tg none">'+(lang==='en'?'no env. factor linked':'尚未关联环境因子')+'</span>';
+    }
+    (c.measureGroups||[]).forEach(function(m){ if(MGIX[m]) h+='<span class="tg m">'+dual(MGIX[m].name,MGIX[m].nameEn)+'</span>'; });
+    h+='</div>';
+    if(editMode){
+      var open = addOpen && addOpen.cid===c.id;
+      h+='<div class="erow">'+
+        '<button class="ebtn" data-add-open="s" data-cid="'+c.id+'">'+
+          (open&&addOpen.kind==='s'?'▲ ':'＋ ')+dual('胁迫因子','stressor')+'</button>'+
+        '<button class="ebtn" data-add-open="g" data-cid="'+c.id+'">'+
+          (open&&addOpen.kind==='g'?'▲ ':'＋ ')+dual('环境因子','env. factor')+'</button>'+
+        '</div>';
+      if(open) h+=pickPanel(c, addOpen.kind);
+    }
+    if(lang!=='en' && c.summary) h+='<div class="sum">'+esc(c.summary)+'</div>';
+    if(lang==='both' && c.summaryEn) h+='<div class="lab">EN</div>';
+    if(lang!=='zh' && c.summaryEn) h+='<div class="sum ensum">'+esc(c.summaryEn)+'</div>';
+    if(c.kv&&c.kv.length){
+      // kv / kvEn 同序对齐，按 lang 取中文或英文
+      var kve=c.kvEn||[];
+      h+='<div class="kv">';
+      c.kv.slice(0,5).forEach(function(r,i){
+        var e=kve[i]||null;
+        var lab = lang==='en' ? ((e&&e[0])||r[0]) : r[0];
+        var val = lang==='en' ? ((e&&e[1])||r[1]) : r[1];
+        var nt  = lang==='en' ? ((e&&e[2])||r[2]||'') : (r[2]||'');
+        h+='<div><i>'+esc(lab)+'</i>　<b>'+esc(val)+'</b>'+(nt?'　'+esc(nt):'')+'</div>'; });
+      if(lang==='both' && kve.length && (c.kv.length>5))
+        h+='<div style="color:#8b95a1;font-size:11px">'+dual('（仅显示前 5 条）','(first 5 shown)')+'</div>';
+      h+='</div>';
+    }
+    var u=urls(c.srclink);
+    if(u.length) h+='<div class="kv">'+u.slice(0,3).map(function(x,i){
+      return '<a href="'+esc(x)+'" target="_blank" rel="noopener">'+
+        (lang==='en'?'Source ':'来源 ')+(i+1)+'</a>';}).join(' ｜ ')+'</div>';
+    // 反查：这个案例的措施作用在哪些空间对象上 → 跳到空间矩阵
+    var objs=[];
+    (c.measureGroups||[]).forEach(function(mid){
+      var g=MGIX[mid]; if(!g||!g.objects) return;
+      g.objects.forEach(function(oid){ if(objs.indexOf(oid)<0) objs.push(oid); });
+    });
+    if(objs.length){
+      h+='<div class="mxsub" style="margin-top:5px">'+
+        dual('作用的空间对象：','Spatial objects: ');
+      objs.slice(0,8).forEach(function(oid){
+        var o=MOIX[oid]; if(!o) return;
+        h+='<span class="mlink" data-gomx="'+esc(oid)+'">'+dual(o.name,o.nameEn)+'</span>';
+      });
+      if(objs.length>8) h+='<span class="mxsub">…</span>';
+      h+='</div>';
+    }
+    return h+'</div>';
+  }
+
+  function renderChrome(){
+    document.getElementById('h1').innerHTML=dual(
+      '四维筛选 · 气候胁迫因子 × 环境因子 × 干预策略 × 空间对象',
+      'Four-Dimensional Filter · Climate Stressor × Environmental Factor × Intervention Strategy × Spatial Object');
+    document.getElementById('hsub').innerHTML=dual(
+      '四列都可以先点、任意顺序、任意组合（同列内 OR，跨列 AND）｜ 括号里的数字是当前条件下的案例数｜ 第 3 维 C01「引导」可再按「感官通道 × 目标场景」双维筛选｜ 环境因子旁的绿色数字可展开知识卡｜ 结果列顶部可按名称 / 地区 / 概括 / 数据 / 标签搜索案例｜ 结果列「空间矩阵」页签是机制轴（空间对象 × 可控参数 × 感知 × 行为 × 反馈），与左侧四列双向跳转',
+      'Any column can be the starting point; any order, any combination (OR within a column, AND across columns). The number in brackets is the case count under the current filter. C01 "Guidance" in dimension 3 can be filtered further by sensory channel × target scenario. Green numbers beside environmental factors open the knowledge notes. At the top of the results column you can search cases by name, place, summary, data or any tag. The Spatial Matrix tab is the mechanism axis (spatial object × controllable parameter × perception × behaviour × feedback), with two-way links to the four columns on the left.');
+    document.getElementById('l-rel').innerHTML=dual('只显示相关环境因子','Related environmental factors only');
+    document.getElementById('l-sub').innerHTML=dual('显示措施细分（不参与筛选）','Show measure breakdown (not filterable)');
+    document.getElementById('l-knsub').innerHTML=dual('展开环境因子小项（含知识卡）','Expand sub-items (with notes)');
+    document.getElementById('clr').innerHTML=dual('清空','Reset');
+    document.getElementById('knbtn').innerHTML=dual('知识卡 '+KN_LIST.length,'Knowledge notes '+KN_LIST.length);
+    document.getElementById('p-s').innerHTML=dual('从气候出发','From climate');
+    document.getElementById('p-m').innerHTML=dual('从策略反查','From strategy');
+    document.getElementById('p-g').innerHTML=dual('从环境因子出发','From env. factor');
+    var fb=document.getElementById('foldb');
+    fb.innerHTML=foldFilters?dual('▶ 展开筛选','▶ Show filters')
+                            :dual('◀ 收起筛选','◀ Hide filters');
+    fb.classList.toggle('on', foldFilters);
+    document.getElementById('q').placeholder=lang==='en'
+      ? 'Search options or cases' : '搜索条件或案例';
+    // 编辑模式
+    var em=document.getElementById('edm');
+    em.innerHTML=dual('编辑模式','Edit mode');
+    em.classList.toggle('edon', editMode);
+    var eb=document.getElementById('ebar');
+    if(editMode){
+      eb.style.display='flex';
+      eb.innerHTML='<b>'+dual('编辑模式','Edit mode')+'</b>'+
+        '<span>'+(lang==='en'
+          ? Object.keys(EDIT).length+' case(s) · '+mxTouched()+' matrix object(s) modified'
+          : '案例已改 '+Object.keys(EDIT).length+' 个 ｜ 矩阵已改 '+mxTouched()+' 个对象')+'</span>'+
+        '<em>'+(lang==='en'
+          ? 'Cases: × removes, ＋ adds. Matrix (in the Spatial matrix tab): parameters, adjustability and measure mappings are all editable. Edits live in this browser only.'
+          : '案例：点 × 删除、点 ＋ 添加。矩阵（在「空间矩阵」页签里）：参数、可调性、措施映射都可改。改动只存在本机浏览器。')+'</em>'+
+        '<button id="eexp">'+dual('导出案例 JSON','Export cases')+'</button>'+
+        '<button id="eimp">'+dual('导入案例 JSON','Import cases')+'</button>'+
+        '<button id="erst">'+dual('还原案例关联','Restore cases')+'</button>';
+    } else {
+      eb.style.display='none'; eb.innerHTML='';
+    }
+  }
+
+  function rememberScroll(){
+    Array.prototype.forEach.call(document.querySelectorAll('.col'),function(el){
+      scrollMem[el.getAttribute('data-col')||'res']=el.scrollTop;
+    });
+  }
+  function restoreScroll(){
+    Array.prototype.forEach.call(document.querySelectorAll('.col'),function(el){
+      var k=el.getAttribute('data-col')||'res';
+      if(scrollMem[k]!=null) el.scrollTop=scrollMem[k];
+    });
+  }
+  function render(){
+    // 先记下各列滚动位置：否则每次重渲染（例如编辑时删掉一个因子）都会跳回顶部
+    var winY=window.pageYOffset;
+    rememberScroll();
+    renderChrome();
+    var cols={s:renderColStress(),g:renderColEnv(),m:renderColMeasure(),o:renderColObj()};
+    var cls={s:'col col-s col-f',g:'col col-g col-f',m:'col col-m col-f',o:'col col-o col-f'};
+    var body=order.map(function(k){
+      return '<div class="'+cls[k]+(fold[k]?' fold':'')+'" data-col="'+k+'">'+cols[k]+'</div>';
+    }).join('');
+    body+='<div class="col" data-col="res">'+renderResults()+'</div>';
+    var mainEl=document.getElementById('main');
+    mainEl.innerHTML=body;
+    mainEl.classList.toggle('foldf', foldFilters);
+    void mainEl.offsetHeight;   // 强制先完成布局，否则下一步的 scrollTop 会被浏览器 clamp 成 0
+    restoreScroll();
+    if(winY) window.scrollTo(0,winY);
+    // 折叠 / 展开时列宽变化很大，首次赋值仍可能被 clamp —— 等布局稳定后再校正一次
+    requestAnimationFrame(restoreScroll);
+    var cr='<span>'+(lang==='en'?'Filter: ':'当前条件：')+'</span>';
+    var any=false;
+    for(var a in sel.s){ cr+='<span class="chip" data-cd="s" data-cid="'+esc(a)+'">'+dual(sn(a),snEn(a))+' ×</span>'; any=true; }
+    for(var b in sel.g){ cr+='<span class="chip g" data-cd="g" data-cid="'+esc(b)+'">'+dual(gn(b),gnEn(b))+' ×</span>'; any=true; }
+    for(var d in sel.m){ cr+='<span class="chip m" data-cd="m" data-cid="'+esc(d)+'">'+dual(mn(d),mnEn(d))+' ×</span>'; any=true; }
+    for(var e in sel.o){
+      var oe=MOIX[e];
+      cr+='<span class="chip o" data-cd="o" data-cid="'+esc(e)+'">'+dual(oe?oe.name:e,oe?oe.nameEn:e)+' ×</span>'; any=true; }
+    for(var gc in gsel.ch){ cr+='<span class="chip m" data-cd="gc" data-cid="'+esc(gc)+'">'+dual(gchN(gc),gchEn(gc))+' ×</span>'; any=true; }
+    for(var gs in gsel.sc){ cr+='<span class="chip m" data-cd="gs" data-cid="'+esc(gs)+'">'+dual(gscN(gs),gscEn(gs))+' ×</span>'; any=true; }
+    if(objLock && mxObj){
+      var oo=MOIX[mxObj];
+      cr+='<span class="chip g" data-unlock="1" title="'+
+        (lang==='en'?'Clear this lock':'清除这个锁定')+'">'+
+        dual('空间对象：'+(oo?oo.name:mxObj),'spatial object: '+(oo?oo.nameEn:mxObj))+
+        ' ×</span>'; any=true;
+    }
+    if(!any) cr+='<span>'+(lang==='en'
+      ? (foldFilters?'(filters hidden — use ▶ Show filters to start)'
+                    :'(nothing selected yet — click any column on the left to start)')
+      : (foldFilters?'（筛选栏已收起，点「▶ 展开筛选」开始选择）'
+                    :'（还没选，点左边任意一列开始）'))+'</span>';
+    cr+='<span style="margin-left:auto">'+(lang==='en'?'cases ':'命中案例 ')+
+      '<b style="color:#185fa5">'+matchCases().length+'</b> / '+C.length+'</span>';
+    document.getElementById('crumb').innerHTML=cr;
+    var xe=document.getElementById('eexp'), xi=document.getElementById('eimp'), xr=document.getElementById('erst');
+    if(xe) xe.onclick=exportEdit;
+    if(xi) xi.onclick=function(){ document.getElementById('efile').click(); };
+    if(xr) xr.onclick=resetEdit;
+    // 空间矩阵编辑条（按钮长在矩阵页里，重渲染后要重新挂）
+    var me2=document.getElementById('mxexp'), mi2=document.getElementById('mximp'),
+        mr2=document.getElementById('mxrst');
+    if(me2) me2.onclick=exportMatrix;
+    if(mi2) mi2.onclick=function(){ document.getElementById('mfile').click(); };
+    if(mr2) mr2.onclick=resetMatrix;
+  }
+
+  /* ==================== 知识卡抽屉 ==================== */
+  function lvName(v){
+    if(lang==='en') return LVE[v]||v;
+    return v==='ok'?'舒适 / 可用':v==='warn'?'需注意':v==='bad'?'有害 / 禁用':'说明';
+  }
+  function knGroupOf(key){
+    var gs=KN2G[key]; if(!gs||!gs.length) return null;
+    return dView.gid ? (gs.filter(function(g){return g.id===dView.gid;})[0]||gs[0]) : gs[0];
+  }
+
+  function knCardHtml(key){
+    var c=KN[key]; if(!c) return '';
+    var g=knGroupOf(key);
+    var h='<div class="kh"><h2>'+dual(key,c.titleEn||'')+'</h2>'+
+      (c.unit?'<span class="unit">'+esc(lang==='en'?(c.unitEn||c.unit):c.unit)+'</span>':'')+
+      (g?'<span class="khg">'+dual(g.zh,g.en)+'</span>':'')+'</div>';
+    if(c.desc) h+='<div class="kbox">'+kb(c.desc,c.descEn)+'</div>';
+
+    if(c.ranges&&c.ranges.length){
+      h+='<div class="kh3">'+dual('适宜区间与阈值','Values and thresholds')+'</div>'+
+         '<table><thead><tr><th style="width:150px">'+dual('数值','Value')+'</th>'+
+         '<th>'+dual('含义','Meaning')+'</th><th style="width:96px">'+dual('判读','Reading')+'</th>'+
+         '</tr></thead><tbody>';
+      c.ranges.forEach(function(r,i){
+        var en=(c.rangesEn||[])[i]||'';
+        h+='<tr class="lv-'+esc(r[2]||'info')+'"><td class="v">'+esc(r[0])+'</td><td>'+
+           (lang==='en'? esc(en) : esc(r[1])+(lang==='both'&&en?'<span class="en">'+esc(en)+'</span>':''))+
+           '</td><td><span class="tag">'+esc(lvName(r[2]||'info'))+'</span></td></tr>';
+      });
+      h+='</tbody></table>';
+    }
+
+    if(c.targets&&c.targets.length){
+      h+='<div class="kh3">'+dual('设计目标','Design targets')+'</div><table><tbody>';
+      c.targets.forEach(function(t,i){
+        var en=(c.targetsEn||[])[i]||['',''];
+        var a = lang==='en'? (en[0]||t[0]) : t[0];
+        var b = lang==='en'? (en[1]||t[1]) : t[1];
+        h+='<tr><td style="width:180px;color:#5b6470">'+esc(a)+
+           (lang==='both'&&en[0]?'<span class="en">'+esc(en[0])+'</span>':'')+'</td><td><b>'+esc(b)+'</b>'+
+           (lang==='both'&&en[1]?'<span class="en">'+esc(en[1])+'</span>':'')+'</td></tr>';
+      });
+      h+='</tbody></table>';
+    }
+
+    if(c.why||c.whyEn) h+='<div class="kh3">'+dual('为什么重要','Why it matters')+'</div>'+
+      '<div class="kbox hl">'+kb(c.why,c.whyEn)+'</div>';
+    if(c.how||c.howEn) h+='<div class="kh3">'+dual('怎么用','How to use it')+'</div>'+
+      '<div class="kbox">'+kb(c.how,c.howEn)+'</div>';
+    if(c.watch||c.watchEn) h+='<div class="kbox warn"><b>'+dual('注意　','Caution　')+'</b>'+
+      kb(c.watch,c.watchEn)+'</div>';
+
+    if(c.cases&&c.cases.length){
+      h+='<div class="kh3">'+dual('相关案例','Related cases')+'</div>';
+      c.cases.forEach(function(x,i){
+        var en=(c.casesEn||[])[i]||x;
+        h+='<span class="pill">'+dual(x,en)+'</span>';
+      });
+    }
+    if(c.srcs&&c.srcs.length){
+      h+='<div class="kh3">'+dual('来源','Sources')+'</div><ul style="margin:0;padding-left:18px;font-size:12px">';
+      c.srcs.forEach(function(s,i){
+        var en=(c.srcsEn||[])[i]||'';
+        var nm = lang==='en'? (en||s[0]) : s[0];
+        h+='<li>'+(s[1]? '<a href="'+esc(s[1])+'" target="_blank" rel="noopener">'+esc(nm)+'</a>' : esc(nm));
+        if(lang==='both'&&en) h+='<span class="en">'+esc(en)+'</span>';
+        h+='</li>';
+      });
+      h+='</ul>';
+    }
+    if(c.notes) h+='<div class="kh3">'+dual('我的笔记','My notes')+'</div><div class="kbox">'+esc(c.notes)+'</div>';
+    h+='<div class="kacts">'+
+       '<button class="pri" data-back2="1">'+dual('← 返回知识卡目录','← Back to notes index')+'</button>'+
+       '</div>';
+    h+='<div class="kdb">'+dual(
+      '知识卡内容源：src/build_knowledge.py + src/knowledge_sense.py（改后重新生成即可）',
+      'Notes source: src/build_knowledge.py + src/knowledge_sense.py')+'</div>';
+    return h;
+  }
+
+  function knListHtml(){
+    var q=dView.q.trim().toLowerCase();
+    var h='<div class="dsub">'+
+      '<input type="search" id="dq" placeholder="'+(lang==='en'
+        ? 'Search notes, e.g. smell / soundscape / colour' : '搜索知识卡，如 气味 / 声景 / 色彩')+
+        '" value="'+esc(dView.q)+'">'+
+      '<button data-only="1" class="'+(dView.onlySense?'on':'')+'">'+
+        dual('只看多感官','Multisensory only')+'</button>'+
+      '</div>';
+    var byG={};
+    KN_LIST.forEach(function(x){
+      var g=GIX[x.gid]; if(!g) return;
+      if(dView.onlySense && !SENSE_G[x.gid]) return;
+      if(q){
+        var c=KN[x.key]||{};
+        var hay=(x.key+' '+(c.desc||'')+' '+(c.descEn||'')+' '+(c.why||'')+' '+(c.how||'')+' '+
+          (c.watch||'')+' '+(c.ranges||[]).map(function(r){return r[0]+' '+r[1];}).join(' ')+' '+
+          (c.rangesEn||[]).join(' ')+' '+g.zh+' '+(g.en||'')).toLowerCase();
+        if(hay.indexOf(q)<0) return;
+      }
+      (byG[x.gid]=byG[x.gid]||[]).push(x.key);
+    });
+    var any=false;
+    G.forEach(function(g){
+      var ks=byG[g.id]; if(!ks||!ks.length) return;
+      any=true;
+      var gi = SENSE_G[g.id] ? ' ★' : '';
+      h+='<div class="kgl'+(dView.gid===g.id?' cur':'')+'">'+esc(g.zh)+gi+
+         '<em>'+esc(g.en||'')+'</em>'+
+         '<span style="float:right;font-weight:400;color:#8b95a1;font-size:11px">'+ks.length+'</span></div>';
+      ks.forEach(function(k){
+        var c=KN[k]||{};
+        var one = lang==='en' ? (c.descEn||c.desc||'') : (c.desc||c.descEn||'');
+        h+='<div class="kli" data-k="'+esc(k)+'"><b>'+dual(k,c.titleEn||'')+'</b>'+
+           (one?'<em>'+esc(one.slice(0,62))+'…</em>':'')+'</div>';
+      });
+    });
+    if(!any) h+='<div class="empty">'+dual('没有匹配的知识卡','No matching notes')+'</div>';
+    return h;
+  }
+
+  function renderDrawer(){
+    var dh=document.getElementById('dhead'), db=document.getElementById('dbody');
+    if(!dOpen) return;
+    var inCard = dView.mode==='card' && dView.key && KN[dView.key];
+    dh.innerHTML='<h3>'+dual('环境因子知识卡','Environmental Factor Notes')+
+      '<em>'+KN_LIST.length+'</em></h3>'+
+      (inCard?'<button id="dback">'+dual('← 知识卡目录','← Notes index')+'</button>':'')+
+      '<span class="cn">'+(inCard
+        ?(lang==='en'?'Esc closes':'按 Esc 关闭')
+        :(lang==='en'?'Click a factor to read':'点因子查看知识'))+'</span>'+
+      '<button id="dclose">'+dual('关闭','Close')+'</button>';
+    db.innerHTML = inCard ? knCardHtml(dView.key) : knListHtml();
+    document.getElementById('dclose').onclick=closeDrawer;
+    var bk=document.getElementById('dback');
+    if(bk) bk.onclick=backToList;
+    var b2=db.querySelector('[data-back2]');
+    if(b2) b2.onclick=backToList;
+    var o=db.querySelector('button[data-only]');
+    if(o) o.onclick=function(){ dView.onlySense=!dView.onlySense; renderDrawer(); };
+    var qi=document.getElementById('dq');
+    if(qi){
+      qi.oninput=function(){ dView.q=this.value; renderDrawer();
+        var n=document.getElementById('dq'); if(n){ n.focus();
+          n.setSelectionRange(n.value.length,n.value.length); } };
+    }
+    db.querySelectorAll('.kli').forEach(function(el){
+      el.onclick=function(){ openCard(el.getAttribute('data-k')); };
+    });
+    // 列表态：滚动到当前卡所属大类
+    if(!inCard && dView.gid){
+      var cur=db.querySelector('.kgl.cur');
+      if(cur) db.scrollTop=Math.max(0, cur.offsetTop - db.offsetTop - 12);
+    }
+  }
+  function backToList(){
+    // 返回目录时记住当前卡所属大类，便于定位
+    var k=dView.key;
+    if(k && KN2G[k] && KN2G[k].length) dView.gid=KN2G[k][0].id;
+    dView.mode='list'; dView.key=null; renderDrawer();
+  }
+  function openDrawer(gid,key){
+    dOpen=true;
+    if(gid!==undefined) dView.gid=gid||null;
+    if(key){ dView.mode='card'; dView.key=key; }
+    else { dView.mode='list'; dView.key=null; }
+    document.getElementById('drawer').classList.add('on');
+    document.getElementById('mask').classList.add('on');
+    document.getElementById('dbody').scrollTop=0;   // 先归零，再渲染（渲染内可能按大类定位）
+    renderDrawer();
+  }
+  function openCard(key){ dView.mode='card'; dView.key=key; renderDrawer();
+    document.getElementById('dbody').scrollTop=0; }
+  function closeDrawer(){
+    dOpen=false;
+    document.getElementById('drawer').classList.remove('on');
+    document.getElementById('mask').classList.remove('on');
+  }
+
+  /* ==================== 事件 ==================== */
+  document.getElementById('main').addEventListener('click',function(e){
+    // 编辑模式：删除某个关联因子
+    var dl=e.target.closest('.x[data-del]');
+    if(dl){ e.stopPropagation();
+      var cid=dl.getAttribute('data-cid'), kd=dl.getAttribute('data-del'), fd=dl.getAttribute('data-fid');
+      var cc=CIX[cid];
+      if(cc){
+        var arr=(kd==='s'?cc.stressors:cc.envGroups);
+        var ii=arr.indexOf(fd); if(ii>=0) arr.splice(ii,1);
+        touch(cid); rebuildAfterEdit(); render();
+      }
+      return; }
+    // 编辑模式：展开 / 收起候选面板
+    var ao=e.target.closest('[data-add-open]');
+    if(ao){ e.stopPropagation();
+      var k2=ao.getAttribute('data-add-open'), cid2=ao.getAttribute('data-cid');
+      if(k2==='close'||(addOpen&&addOpen.cid===cid2&&addOpen.kind===k2)) addOpen=null;
+      else addOpen={cid:cid2,kind:k2};
+      render(); return; }
+    // 编辑模式：点候选因子即添加
+    var ab=e.target.closest('.pkb[data-add]');
+    if(ab){ e.stopPropagation();
+      var cid3=ab.getAttribute('data-cid'), k3=ab.getAttribute('data-add'), f3=ab.getAttribute('data-fid');
+      var c3=CIX[cid3];
+      if(c3){
+        var arr3=(k3==='s'?c3.stressors:c3.envGroups);
+        if(arr3.indexOf(f3)<0) arr3.push(f3);
+        touch(cid3); rebuildAfterEdit(); render();
+      }
+      return; }
+    // 空间矩阵 ↔ 措施大类：点措施跳到措施页
+    var gm=e.target.closest('[data-gom]');
+    if(gm){ tab='measure'; sel.m={}; sel.m[gm.getAttribute('data-gom')]=1; mxHL=null; objLock=null; mxObj=null; render(); return; }
+    // ============ 空间矩阵编辑（仅编辑模式下这些控件才被渲染出来）============
+    // 每个对象的参数改动记录（懒建）
+    function paramEdit(oid){
+      if(!MX.params[oid]){
+        var o=MOIX[oid];
+        MX.params[oid]={rt:(o.runtime||[]).slice(), dz:(o.design||[]).slice(), add:[], del:[]};
+      }
+      var e=MX.params[oid];
+      e.rt=e.rt||[]; e.dz=e.dz||[]; e.add=e.add||[]; e.del=e.del||[];
+      return e;
+    }
+    // 删除参数
+    var mdp=e.target.closest('[data-mxdelp]');
+    if(mdp){ e.stopPropagation();
+      var oidP=mdp.getAttribute('data-oid'), pP=mdp.getAttribute('data-mxdelp');
+      if(MOIX[oidP]){
+        var ep=paramEdit(oidP);
+        var ai=(ep.add||[]).indexOf(pP);
+        if(ai>=0){ ep.add.splice(ai,1); }              // 之前是新增的 → 撤销新增
+        else { if(ep.del.indexOf(pP)<0) ep.del.push(pP); }
+        ep.rt=ep.rt.filter(function(x){return x!==pP;});
+        ep.dz=ep.dz.filter(function(x){return x!==pP;});
+        saveMatrixEdit(); applyMatrixAndRender();
+      }
+      return; }
+    // 切换可调性（运行中可调 ↔ 设计期定死）
+    var mtg=e.target.closest('[data-mxtog]');
+    if(mtg){ e.stopPropagation();
+      var oidT=mtg.getAttribute('data-oid'), pT=mtg.getAttribute('data-mxtog');
+      var oT=MOIX[oidT];
+      if(oT){
+        var et=paramEdit(oidT);
+        var wasRt=(et.rt||[]).indexOf(pT)>=0;
+        et.rt=et.rt.filter(function(x){return x!==pT;});
+        et.dz=et.dz.filter(function(x){return x!==pT;});
+        if(wasRt) et.dz.push(pT); else et.rt.push(pT);
+        // 同步搬动内置基线，否则 applyMatrixEdit 会按 RT_SET0 回退回去
+        var sT=MX_SNAP[oidT];
+        if(sT){
+          sT.rt=(sT.rt||[]).filter(function(x){return x!==pT;});
+          sT.dz=(sT.dz||[]).filter(function(x){return x!==pT;});
+          if(wasRt) sT.dz.push(pT); else sT.rt.push(pT);
+        }
+        saveMatrixEdit(); applyMatrixAndRender();
+      }
+      return; }
+    // 解除「措施 ↔ 对象」映射
+    var mdm=e.target.closest('[data-mxdelm]');
+    if(mdm){ e.stopPropagation();
+      var oidM=mdm.getAttribute('data-oid'), midM=mdm.getAttribute('data-mxdelm');
+      var swM=MX.measSw[midM] || (MX.measSw[midM]={add:[],del:[]});
+      swM.add=swM.add||[]; swM.del=swM.del||[];
+      var xi2=swM.add.indexOf(oidM);
+      if(xi2>=0) swM.add.splice(xi2,1);                        // 之前是新增的 → 撤销新增
+      else if(swM.del.indexOf(oidM)<0) swM.del.push(oidM);
+      saveMatrixEdit(); applyMatrixAndRender();
+      return; }
+    // 展开 / 收起矩阵候选面板
+    var mo=e.target.closest('[data-mxopen]');
+    if(mo){ e.stopPropagation();
+      var kO=mo.getAttribute('data-mxopen'), oidO=mo.getAttribute('data-oid');
+      if(kO==='close'||(mxOpen&&mxOpen.oid===oidO&&mxOpen.kind===kO)) mxOpen=null;
+      else mxOpen={oid:oidO,kind:kO};
+      render(); return; }
+    // 点候选参数即添加
+    var map=e.target.closest('[data-mxaddp]');
+    if(map){ e.stopPropagation();
+      var oidA=map.getAttribute('data-oid'), pA=map.getAttribute('data-mxaddp');
+      addMatrixParam(oidA,pA); return; }
+    // 点候选措施即添加
+    var mam=e.target.closest('[data-mxaddm]');
+    if(mam){ e.stopPropagation();
+      var oidA2=mam.getAttribute('data-oid'), midA=mam.getAttribute('data-mxaddm');
+      var swA=MX.measSw[midA] || (MX.measSw[midA]={add:[],del:[]});
+      swA.add=swA.add||[]; swA.del=swA.del||[];
+      var di2=swA.del.indexOf(oidA2);
+      if(di2>=0) swA.del.splice(di2,1);                        // 之前是删除的 → 撤销删除
+      else if(swA.add.indexOf(oidA2)<0) swA.add.push(oidA2);
+      saveMatrixEdit(); applyMatrixAndRender();
+      return; }
+    // 输入新参数后点「加入」
+    var mnp=e.target.closest('[data-mxnewp]');
+    if(mnp){ e.stopPropagation();
+      var oidN=mnp.getAttribute('data-oid');
+      var inp=document.getElementById('mxnew');
+      var v=inp?inp.value.trim():'';
+      if(v){ addMatrixParam(oidN,v); } else { toast(lang==='en'?'Type a parameter name first':'请先输入参数名称'); }
+      return; }
+    // 空间矩阵 ↔ 案例：点案例数跳到案例页，并锁定这一批案例
+    var gc=e.target.closest('[data-goc]');
+    if(gc){ tab='case'; mxHL=null; setObjCases(gc.getAttribute('data-goc')); return; }
+    // 措施 / 案例 → 空间矩阵：跳过去并高亮该行
+    var gx=e.target.closest('[data-gomx]');
+    if(gx){ tab='matrix'; mxHL=gx.getAttribute('data-gomx'); render();
+      setTimeout(function(){
+        var tr=document.querySelector('tr.mxhl');
+        if(tr&&tr.scrollIntoView) tr.scrollIntoView({block:'center'});
+      },0); return; }
+    var qb=e.target.closest('.cqb[data-qf]');
+    if(qb){
+      var kf=qb.getAttribute('data-qf'), vf=qb.getAttribute('data-qv');
+      if(qf[kf][vf]) delete qf[kf][vf]; else qf[kf][vf]=1;
+      render(); return;
+    }
+    // 清除「来自空间矩阵」的案例锁定
+    var ul2=e.target.closest('[data-unlock]');
+    if(ul2){ objLock=null; mxObj=null; render(); return; }
+    var qc2=e.target.closest('#cqclr');
+    if(qc2){
+      qf={dim:{},book:{},region:{}};
+      document.getElementById('q').value='';
+      render(); return;
+    }
+    var qc=e.target.closest('#qclr');
+    if(qc){ document.getElementById('q').value=''; render(); return; }
+    var ki=e.target.closest('.knb-ico');
+    if(ki){ e.stopPropagation(); openDrawer(ki.getAttribute('data-kn')); return; }
+    // —— 「引导」二级面板与附注区（必须先于 .opt 判断，避免被误当选项点击）——
+    var gclr=e.target.closest('[data-gclr]');
+    if(gclr){ e.stopPropagation(); gsel={ch:{},sc:{}}; render(); return; }
+    var gbtn=e.target.closest('[data-gopen]');
+    if(gbtn){ e.stopPropagation(); gOpen=!gOpen; render(); return; }
+    var nbtn=e.target.closest('[data-note]');
+    if(nbtn){ e.stopPropagation(); noteOpen=!noteOpen; render(); return; }
+    var gch=e.target.closest('.gc[data-gc]');
+    if(gch){
+      e.stopPropagation();
+      var gk=gch.getAttribute('data-gc'), gv=gch.getAttribute('data-gk');
+      var gbox = gk==='ch' ? gsel.ch : gsel.sc;
+      if(gbox[gv]) delete gbox[gv]; else gbox[gv]=1;
+      // 通道变化后，把已经「全部无据」的场景清掉，避免留下一个置灰却仍生效的条件
+      var chs=Object.keys(gsel.ch);
+      if(chs.length){
+        Object.keys(gsel.sc).forEach(function(sk){
+          var ok=false; chs.forEach(function(ck){ if(gOK(ck,sk)) ok=true; });
+          if(!ok) delete gsel.sc[sk];
+        });
+      }
+      render(); return;
+    }
+    var ik=e.target.closest('.kni.has');
+    if(ik){ e.stopPropagation(); openDrawer(null, ik.getAttribute('data-knkey')); return; }
+    var o=e.target.closest('.opt');
+    if(o){ var d=o.getAttribute('data-d'), id=o.getAttribute('data-id');
+      if(sel[d][id]) delete sel[d][id]; else sel[d][id]=1; render(); return; }
+    var t=e.target.closest('.tabs button');
+    if(t){ tab=t.getAttribute('data-t'); render(); return; }
+    var ch=e.target.closest('.ch[data-f]');
+    if(ch){ var f=ch.getAttribute('data-f'); fold[f]=!fold[f]; render(); return; }
+    var mr=e.target.closest('.mrow');
+    if(mr){ var mid=mr.getAttribute('data-mid'); tab='case';
+      sel.m={}; sel.m[mid]=1; render(); return; }
+    var cd=e.target.closest('.chip[data-cd]');
+    if(cd){ var dd=cd.getAttribute('data-cd'), ci=cd.getAttribute('data-cid');
+      if(dd==='gc') delete gsel.ch[ci];
+      else if(dd==='gs') delete gsel.sc[ci];
+      else delete sel[dd][ci];
+      render(); return; }
+  });
+  document.getElementById('q').addEventListener('input',render);
+  // 面包屑在 header 里、不在 #main 的委托范围内 —— 必须单独绑定，否则点 × 无法移除条件
+  document.getElementById('crumb').addEventListener('click',function(e){
+    var ul=e.target.closest('.chip[data-unlock]');
+    if(ul){ objLock=null; mxObj=null; render(); return; }
+    var cd=e.target.closest('.chip[data-cd]');
+    if(!cd) return;
+    var dd=cd.getAttribute('data-cd'), ci=cd.getAttribute('data-cid');
+    if(dd==='gc') delete gsel.ch[ci];
+    else if(dd==='gs') delete gsel.sc[ci];
+    else delete sel[dd][ci];
+    render();
+  });
+  // 案例查询框：与顶部搜索框共用同一个词，重建后恢复焦点与光标位置
+  document.getElementById('main').addEventListener('input',function(e){
+    if(e.target.id!=='cq') return;
+    var v=e.target.value, pos=e.target.selectionStart;
+    document.getElementById('q').value=v;
+    render();
+    var n=document.getElementById('cq');
+    if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(err){} }
+  });
+  document.getElementById('rel').addEventListener('change',render);
+  document.getElementById('sub').addEventListener('change',render);
+  document.getElementById('knsub').addEventListener('change',render);
+  document.getElementById('clr').onclick=function(){
+    sel={s:{},g:{},m:{},o:{}}; gsel={ch:{},sc:{}}; qf={dim:{},book:{},region:{}};
+    objLock=null; mxObj=null; mxHL=null;
+    var qi=document.getElementById('q'); if(qi) qi.value='';
+    render(); };
+  document.getElementById('knbtn').onclick=function(){
+    if(dOpen && dView.mode==='list'){ closeDrawer(); } else { openDrawer(null,null); }
+  };
+  document.getElementById('mask').onclick=closeDrawer;
+
+  /* ==================== 编辑模式：导出 / 导入 / 还原 ==================== */
+  function exportEdit(){
+    var o={_说明:'三维筛选 · 案例关联因子编辑结果。stressors = 气候胁迫因子 id；env = 基础环境因子大类 id。'+
+              '把本文件发回给内容负责人，即可合并进 CASE_STRESSOR / CASE_ENV 表。',
+           _导出时间:new Date().toISOString(), _案例数:C.length, cases:{}};
+    C.forEach(function(c){
+      o.cases[c.name]={stressors:(c.stressors||[]).slice(), env:(c.envGroups||[]).slice()};
+    });
+    var blob=new Blob([JSON.stringify(o,null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='case-links-'+new Date().toISOString().slice(0,10)+'.json';
+    a.click(); URL.revokeObjectURL(a.href);
+    toast(lang==='en'?'Exported '+C.length+' cases':'已导出 '+C.length+' 个案例的关联');
+  }
+  function importEdit(file){
+    var r=new FileReader();
+    r.onload=function(){
+      try{
+        var o=JSON.parse(r.result);
+        var cs=o.cases||o, n=0;
+        for(var nm in cs){
+          if(nm.charAt(0)==='_') continue;
+          var c=C.filter(function(x){return x.name===nm;})[0];
+          if(!c) continue;
+          var v=cs[nm];
+          var ss=Array.isArray(v)?v:(v.stressors||null);
+          var gg=Array.isArray(v)?null:(v.env||null);
+          if(ss) c.stressors=ss.slice();
+          if(gg) c.envGroups=gg.slice();
+          EDIT[c.id]={s:(c.stressors||[]).slice(), g:(c.envGroups||[]).slice()};
+          n++;
+        }
+        saveEdit(); rebuildAfterEdit(); render();
+        toast(lang==='en'?'Imported '+n+' cases':'已导入 '+n+' 个案例的关联');
+      }catch(err){ toast(lang==='en'?'Invalid JSON file':'JSON 文件格式不正确'); }
+    };
+    r.readAsText(file,'utf-8');
+  }
+  function resetEdit(){
+    if(!confirm(lang==='en'
+      ? 'Discard all local edits and restore the built-in links?'
+      : '放弃所有本机修改，还原为内置关联？')) return;
+    EDIT={}; addOpen=null;
+    try{ localStorage.removeItem(EDIT_KEY); }catch(e){}
+    C.forEach(function(c){ var o=ORIG[c.id]; if(o){ c.stressors=o.s.slice(); c.envGroups=o.g.slice(); } });
+    rebuildAfterEdit(); render();
+    toast(lang==='en'?'Restored to built-in links':'已还原为内置关联');
+  }
+
+  /* ---- 空间矩阵编辑：导出 / 导入 / 还原 ---- */
+  function exportMatrix(){
+    // 导出为「可直接覆盖回源表」的形态：每个对象的参数 + 可调性 + 措施映射
+    var o={_说明:'三维筛选 · 空间矩阵编辑结果。params[对象] 给出该对象最终的参数清单与可调性 '+
+                '(rt=运行中可调 / dz=设计期定死)；measures[对象] 给出最终的措施大类映射。'+
+                '把本文件发回给内容负责人，即可合并回 MEASURE_TO_OBJ 与参数可调性表。',
+           _导出时间:new Date().toISOString(), _对象数:MO.length,
+           params:{}, measures:{}};
+    MO.forEach(function(x){
+      o.params[x.id]={params:x.params.slice(), rt:x.runtime.slice(), dz:x.design.slice()};
+      o.measures[x.id]=x.measures.slice();
+    });
+    var blob=new Blob([JSON.stringify(o,null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='matrix-edits-'+new Date().toISOString().slice(0,10)+'.json';
+    a.click(); URL.revokeObjectURL(a.href);
+    toast(lang==='en'?'Exported the matrix ('+MO.length+' objects)':'已导出矩阵（'+MO.length+' 个对象）');
+  }
+  function importMatrix(file){
+    var r=new FileReader();
+    r.onload=function(){
+      try{
+        var o=JSON.parse(r.result), n=0;
+        // 新格式：{params:{oid:{params,rt,dz}}, measures:{oid:[mid]}}
+        if(o.params||o.measures){
+          MX.params={}; MX.objMeas={};
+          for(var oid in (o.params||{})){
+            if(!MOIX[oid]) continue;
+            var v=o.params[oid];
+            MX.params[oid]={rt:(v.rt||[]).slice(), dz:(v.dz||[]).slice(),
+                            add:(v.params||[]).slice(), del:MX_SNAP[oid].params.slice()};
+            n++;
+          }
+          for(var oid2 in (o.measures||{})){
+            if(!MOIX[oid2]) continue;
+            MX.objMeas[oid2]=(o.measures[oid2]||[]).slice();
+          }
+          MX.measSw={};
+        } else {
+          toast(lang==='en'?'Unrecognised matrix file':'无法识别的矩阵文件');
+          return;
+        }
+        saveMatrixEdit(); applyMatrixAndRender();
+        toast(lang==='en'?'Imported '+n+' objects':'已导入 '+n+' 个对象的矩阵改动');
+      }catch(err){ toast(lang==='en'?'Invalid JSON file':'JSON 文件格式不正确'); }
+    };
+    r.readAsText(file,'utf-8');
+  }
+  function resetMatrix(){
+    if(!confirm(lang==='en'
+      ? 'Discard all matrix edits and restore the built-in matrix?'
+      : '放弃所有矩阵修改，还原为内置矩阵？')) return;
+    MX={}; mxOpen=null;
+    try{ localStorage.removeItem(MX_KEY); }catch(e){}
+    MO.forEach(function(o){
+      o.params=o._baseParams.slice();
+      o.paramsEn=o.params.map(function(p){ return PARAM_EN_ALL[p]||p; });
+      o.measures=o._baseMeas.slice();
+      o.n_measure=o.measures.length;
+      o.runtime=o.params.filter(function(p){ return RT_SET0[p]; });
+      o.design=o.params.filter(function(p){ return !RT_SET0[p]; });
+      o.n_param=o.params.length; o.n_runtime=o.runtime.length; o.n_design=o.design.length;
+      var cids=[];
+      o.measures.forEach(function(mid){ var g=MGIX[mid]; if(!g) return;
+        (g.cases||[]).forEach(function(cid){ if(cids.indexOf(cid)<0) cids.push(cid); }); });
+      o.cases=cids; o.n_case=cids.length;
+      var f={};
+      cids.forEach(function(cid){ var c=CIX[cid]; if(!c) return;
+        (c.stressors||[]).forEach(function(s){ f[s]=(f[s]||0)+1; }); });
+      o.stressors=Object.keys(f).map(function(k){ return [k,f[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+    });
+    applyMatrixAndRender();
+    toast(lang==='en'?'Restored to the built-in matrix':'已还原为内置矩阵');
+  }
+  document.getElementById('edm').onclick=function(){
+    editMode=!editMode; addOpen=null; mxOpen=null; render();
+    if(editMode) toast(lang==='en'
+      ? 'Edit mode on — edit case links and the spatial matrix'
+      : '编辑模式已开：可改案例关联，也可改空间矩阵');
+  };
+  document.getElementById('efile').addEventListener('change',function(e){
+    var f=e.target.files[0]; if(f) importEdit(f);
+    e.target.value='';
+  });
+  document.getElementById('mfile').addEventListener('change',function(e){
+    var f=e.target.files[0]; if(f) importMatrix(f);
+    e.target.value='';
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape') return;
+    if(mxOpen){ mxOpen=null; render(); return; }
+    if(addOpen){ addOpen=null; render(); return; }
+    closeDrawer();
+  });
+
+  function preset(p){
+    ['s','g','m'].forEach(function(k){
+      document.getElementById('p-'+k).classList.toggle('on', k===p); });
+    // 第 4 维（空间对象）始终跟在这三列之后
+    order = p==='s' ? ['s','g','m','o'] : p==='m' ? ['m','s','g','o'] : ['g','s','m','o'];
+    render();
+  }
+  document.getElementById('p-s').onclick=function(){preset('s');};
+  document.getElementById('p-m').onclick=function(){preset('m');};
+  document.getElementById('p-g').onclick=function(){preset('g');};
+  document.getElementById('foldb').onclick=function(){
+    foldFilters=!foldFilters; render();
+    toast(foldFilters
+      ? (lang==='en'?'Filters hidden — use ▶ Show filters to bring them back'
+                    :'筛选栏已收起，点「▶ 展开筛选」随时展开')
+      : (lang==='en'?'Filters shown':'筛选栏已展开'));
+  };
+
+  // 语言切换
+  Array.prototype.forEach.call(document.querySelectorAll('.langs button'),function(b){
+    b.onclick=function(){
+      lang=b.getAttribute('data-lang');
+      Array.prototype.forEach.call(document.querySelectorAll('.langs button'),function(x){
+        x.classList.toggle('on', x===b); });
+      render();
+      if(dOpen) renderDrawer();
+    };
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

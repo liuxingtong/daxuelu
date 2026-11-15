@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基础环境因子 · 知识卡（可编辑原型）</title>
+<style>
+:root{--bg:#fff;--soft:#f6f7f9;--line:#e3e6ea;--ink:#1c2024;--ink2:#5b6470;--ink3:#8b95a1;
+--blue:#185fa5;--blue50:#e6f1fb;--blue800:#0c447c;
+--teal:#0f6e56;--teal50:#e1f5ee;--teal800:#085041;
+--amber:#854f0b;--amber50:#faeeda;--amberline:#ba7515;
+--red:#a32d2d;--red50:#fcebeb;--redline:#e24b4a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.7;
+font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",-apple-system,"Segoe UI",sans-serif}
+header{padding:20px 24px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;
+background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:20}
+h1{margin:0 0 4px;font-size:18px;font-weight:600}
+.sub{color:var(--ink3);font-size:12.5px}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.bar input[type=search]{flex:0 1 260px;padding:6px 11px;border:1px solid var(--line);
+border-radius:8px;font-size:13px;font-family:inherit;color:var(--ink);outline:none}
+.bar input[type=search]:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue50)}
+.bar button{padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:8px;
+font-size:12.5px;font-family:inherit;color:var(--ink2);cursor:pointer}
+.bar button:hover{border-color:var(--blue);color:var(--blue);background:var(--blue50)}
+.bar label{font-size:12.5px;color:var(--ink2);user-select:none;display:flex;align-items:center;gap:5px}
+#prog{margin-left:auto;font-size:12.5px;color:var(--ink3)}
+#prog b{color:var(--blue);font-size:15px;font-weight:600}
+main{display:grid;grid-template-columns:310px 1fr;gap:0;height:calc(100vh - 118px);overflow:hidden}
+aside{border-right:1px solid var(--line);overflow-y:auto;padding:12px 10px 60px}
+section{overflow-y:auto;padding:20px 26px 80px}
+.grp{margin:0 0 4px}
+.ghead{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 8px;border-radius:8px;
+font-size:12.5px;font-weight:600;color:var(--blue800)}
+.ghead:hover{background:var(--soft)}
+.ghead .tri{font-size:10px;color:var(--ink3);transition:transform .15s;display:inline-block}
+.grp.open .ghead .tri{transform:rotate(90deg)}
+.ghead .n{margin-left:auto;font-weight:400;color:var(--ink3);font-size:11.5px}
+.grp.experiential .ghead{color:var(--teal800)}
+.gitems{display:none;padding:0 0 6px 10px}
+.grp.open .gitems{display:block}
+.item{padding:5px 9px;border-radius:7px;cursor:pointer;font-size:12.5px;color:var(--ink2);
+display:flex;align-items:center;gap:6px;border-left:2px solid transparent}
+.item:hover{background:var(--soft)}
+.item.sel{background:var(--blue50);color:var(--blue800);border-left-color:var(--blue)}
+.item .dot{width:6px;height:6px;border-radius:50%;flex:none;background:transparent}
+.item.has .dot{background:var(--teal)}
+.item .un{color:var(--amber);font-size:11px}
+.sep{font-size:11.5px;color:var(--ink3);font-weight:600;padding:6px 9px 2px}
+.card{max-width:840px}
+.chead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-bottom:10px;
+border-bottom:1px solid var(--line);margin-bottom:14px}
+.chead h2{margin:0;font-size:19px;font-weight:600;color:var(--blue800)}
+.unit{font-size:12.5px;color:#fff;background:var(--blue);border-radius:5px;padding:1px 8px}
+.crumb{font-size:12px;color:var(--ink3);margin-left:auto}
+h3{font-size:13px;font-weight:600;margin:18px 0 6px;color:var(--ink2)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:0 0 6px}
+th{background:var(--soft);text-align:left;font-weight:600;padding:7px 10px;border:1px solid var(--line);
+font-size:12px;color:var(--ink2)}
+td{padding:7px 10px;border:1px solid var(--line);vertical-align:top}
+tr.lv-ok td:first-child{border-left:3px solid var(--teal)}
+tr.lv-warn td:first-child{border-left:3px solid var(--amberline)}
+tr.lv-bad td:first-child{border-left:3px solid var(--redline)}
+tr.lv-info td:first-child{border-left:3px solid var(--line)}
+td.v{font-family:Consolas,monospace;font-weight:600;color:var(--ink);white-space:nowrap}
+.tag{font-size:11px;border-radius:10px;padding:0 7px;border:1px solid var(--line);color:var(--ink3)}
+.lv-ok .tag{color:var(--teal800);background:var(--teal50);border-color:var(--teal)}
+.lv-warn .tag{color:var(--amber);background:var(--amber50);border-color:var(--amberline)}
+.lv-bad .tag{color:var(--red);background:var(--red50);border-color:var(--redline)}
+.box{background:var(--soft);border-radius:10px;padding:12px 15px;margin:0 0 10px;font-size:13px}
+.box p{margin:0}
+.box.hl{background:var(--blue50)}
+.box.hl b{color:var(--blue800)}
+.box.warn{background:var(--amber50);color:var(--amber)}
+.box.warn b{color:var(--amber)}
+.pill{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:6px;
+padding:2px 9px;margin:2px 5px 2px 0;font-size:12.5px;color:var(--ink2)}
+a{color:var(--blue);text-decoration:none;border-bottom:1px dotted var(--blue)}
+a:hover{border-bottom-style:solid}
+.empty{color:var(--ink3);font-size:13px;padding:14px 0}
+textarea,input[type=text],input[type=url],select{width:100%;padding:6px 9px;border:1px solid var(--line);
+border-radius:7px;font-size:12.5px;font-family:inherit;color:var(--ink);outline:none;background:#fff}
+textarea:focus,input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue50)}
+.row{display:flex;gap:6px;margin:0 0 6px;align-items:flex-start}
+.row .del{flex:none;width:26px;height:30px;border:1px solid var(--line);background:#fff;
+border-radius:7px;cursor:pointer;color:var(--ink3);font-size:14px;line-height:1}
+.row .del:hover{border-color:var(--redline);color:var(--red)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.acts button{padding:7px 14px;border-radius:8px;font-size:12.5px;font-family:inherit;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--ink2)}
+.acts button.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.acts button:hover{border-color:var(--blue);color:var(--blue)}
+.acts button.pri:hover{background:var(--blue800);color:#fff}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);
+color:#fff;padding:9px 18px;border-radius:9px;font-size:13px;opacity:0;transition:opacity .2s;
+pointer-events:none;z-index:99}
+.toast.on{opacity:.92}
+</style>
+</head>
+<body>
+<header>
+  <h1>基础环境因子 · 知识卡</h1>
+  <div class="sub">《街道智能体 —— 面向气候响应的人因交互空间设计研究》（闫超）｜ Space Matrix 空间矩阵 ｜ 点左侧因子查看知识，点右侧「编辑」可修改</div>
+  <div class="bar">
+    <input type="search" id="q" placeholder="搜索因子或关键词，如 温度 / 阈值 / 遮荫">
+    <label><input type="checkbox" id="only"> 只看已有知识卡</label>
+    <button id="exp">导出 JSON</button>
+    <button id="imp">导入 JSON</button>
+    <button id="reset">还原为内置</button>
+    <input type="file" id="file" accept=".json" hidden>
+    <span id="prog"></span>
+  </div>
+</header>
+<main>
+  <aside id="tree"></aside>
+  <section id="panel"></section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="env_factors.js"></script>
+<script src="knowledge.js"></script>
+<script>
+(function(){
+  var LS='sm_knowledge_v1';
+  var BASE = window.SM_KNOWLEDGE || {};
+  var K = {};
+  for (var k in BASE) K[k]=JSON.parse(JSON.stringify(BASE[k]));
+  try{
+    var saved = JSON.parse(localStorage.getItem(LS)||'{}');
+    for (var k2 in saved) K[k2]=saved[k2];
+  }catch(e){}
+
+  function save(){ try{ localStorage.setItem(LS, JSON.stringify(K)); }catch(e){ toast('保存失败：浏览器存储不可用'); } }
+  function toast(t){ var el=document.getElementById('toast'); el.textContent=t; el.classList.add('on');
+    clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('on');},1600); }
+  function norm(s){ s=(s||'').replace(/^\s*★/,'').trim(); var i=s.indexOf('（'); return i>=0? s.slice(0,i).trim() : s; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  var FACTORS = window.ENV_FACTORS || [];
+  var flat=[], idxByGroup={};
+  FACTORS.forEach(function(g){
+    var items=[], n=0;
+    g.items.forEach(function(it){
+      if(it.indexOf('—')===0){ items.push({sep:it.replace(/—/g,'').trim()}); return; }
+      n++; items.push({name:it, key:norm(it), un:it.indexOf('★')===0});
+    });
+    g._items=items; g._n=n;
+    flat.push({g:g});
+  });
+  var TOTAL = FACTORS.reduce(function(a,g){return a+g._n;},0);
+  var UNIQ = (function(){ var m={}; FACTORS.forEach(function(g){ g._items.forEach(function(it){
+    if(it.sep||!it.key) return; if(!m[it.key]) m[it.key]=[]; m[it.key].push(g.zh); }); }); return m; })();
+
+  var cur=null, editing=false;
+
+  function hasCard(key){ return !!K[key]; }
+  function filledCount(){ return FACTORS.reduce(function(a,g){
+    return a + g._items.filter(function(it){ return it.key && hasCard(it.key); }).length; },0); }
+
+  function updateProg(){
+    document.getElementById('prog').innerHTML='知识卡 <b>'+filledCount()+'</b> / '+TOTAL+' 项因子';
+  }
+
+  function renderTree(){
+    var q=document.getElementById('q').value.trim().toLowerCase();
+    var only=document.getElementById('only').checked;
+    var html='';
+    FACTORS.forEach(function(g,gi){
+      var shown=g._items.filter(function(it){
+        if(it.sep) return !q && !only;
+        if(only && !hasCard(it.key)) return false;
+        if(q){
+          var hay=(it.name+' '+(K[it.key]?JSON.stringify(K[it.key]):'')).toLowerCase();
+          if(hay.indexOf(q)<0) return false;
+        }
+        return true;
+      });
+      if(!shown.length) return;
+      var open = (q||only) ? true : (cur && cur.g===g);
+      html+='<div class="grp '+(g.layer==='experiential'?'experiential':'')+(open?' open':'')+'" data-gi="'+gi+'">';
+      html+='<div class="ghead"><span class="tri">▶</span>'+esc(g.zh)+'<span class="n">'+g._n+'</span></div>';
+      html+='<div class="gitems">';
+      shown.forEach(function(it){
+        if(it.sep){ html+='<div class="sep">'+esc(it.sep)+'</div>'; return; }
+        var sel = cur && cur.key===it.key && cur.g===g;
+        html+='<div class="item'+(hasCard(it.key)?' has':'')+(sel?' sel':'')+'" data-gi="'+gi+'" data-key="'+esc(it.key)+'">'+
+              '<span class="dot"></span><span>'+esc(it.name.replace(/^★/,''))+'</span>'+
+              (it.un?'<span class="un">★</span>':'')+'</div>';
+      });
+      html+='</div></div>';
+    });
+    document.getElementById('tree').innerHTML = html || '<div class="empty">没有匹配的因子</div>';
+  }
+
+  function lvName(l){ return l==='ok'?'舒适 / 可用':l==='warn'?'需注意':l==='bad'?'有害 / 禁用':'说明'; }
+
+  function renderCard(){
+    var p=document.getElementById('panel');
+    if(!cur){ p.innerHTML='<div class="empty">← 从左侧选一个因子，查看它的知识卡。<br><br>'+
+      '带绿点的因子已经有知识卡；没有绿点的可以先看已填的，也可以自己新建。</div>'; return; }
+    var key=cur.key, g=cur.g, c=K[key];
+    var dup = (UNIQ[key]&&UNIQ[key].length>1)
+      ? '<span class="tag" title="同一名称也出现在别的大类，两处共用同一张知识卡">同名条目 · 也属「'+
+        esc(UNIQ[key].filter(function(x){return x!==g.zh;}).join('」「'))+'」</span>' : '';
+    var head='<div class="card"><div class="chead"><h2>'+esc(cur.raw.replace(/^★/,''))+'</h2>'+
+      (c&&c.unit?'<span class="unit">'+esc(c.unit)+'</span>':'')+ dup +
+      '<span class="crumb">'+esc(g.zh)+' · '+esc(g.en)+'</span></div>';
+
+    if(editing){ p.innerHTML = head + renderEditor(key,c) + '</div>'; bindEditor(key); return; }
+
+    if(!c){
+      p.innerHTML = head +
+        '<div class="box">这一项还没有知识卡。可以点下面的按钮新建，写清「适宜区间 / 设计目标 / 怎么用」三件事，'+
+        '以后别人看这一项时就知道它意味着什么。</div>' +
+        '<div class="acts"><button class="pri" id="newc">＋ 新建知识卡</button></div></div>';
+      document.getElementById('newc').onclick=function(){
+        K[key]={unit:'',desc:'',ranges:[],targets:[],why:'',how:'',watch:'',cases:[],srcs:[],notes:''};
+        editing=true; renderCard(); };
+      return;
+    }
+
+    var h = head;
+    if(c.desc) h+='<div class="box">'+esc(c.desc)+'</div>';
+
+    if(c.ranges && c.ranges.length){
+      h+='<h3>适宜区间与阈值</h3><table><thead><tr><th style="width:150px">数值</th>'+
+         '<th>含义</th><th style="width:110px">判读</th></tr></thead><tbody>';
+      c.ranges.forEach(function(r){
+        h+='<tr class="lv-'+esc(r[2]||'info')+'"><td class="v">'+esc(r[0])+'</td><td>'+esc(r[1])+
+           '</td><td><span class="tag">'+esc(lvName(r[2]||'info'))+'</span></td></tr>';
+      });
+      h+='</tbody></table>';
+    }
+
+    if(c.targets && c.targets.length){
+      h+='<h3>设计目标</h3><table><tbody>';
+      c.targets.forEach(function(t){ h+='<tr><td style="width:190px;color:#5b6470">'+esc(t[0])+
+        '</td><td><b>'+esc(t[1])+'</b></td></tr>'; });
+      h+='</tbody></table>';
+    }
+
+    if(c.why) h+='<h3>为什么重要</h3><div class="box hl"><p>'+esc(c.why)+'</p></div>';
+    if(c.how) h+='<h3>怎么用</h3><div class="box">'+mdLite(c.how)+'</div>';
+    if(c.watch) h+='<div class="box warn"><p><b>注意　</b>'+esc(c.watch)+'</p></div>';
+
+    if(c.cases && c.cases.length){
+      h+='<h3>相关案例</h3>';
+      c.cases.forEach(function(x){ h+='<span class="pill">'+esc(x)+'</span>'; });
+    }
+    if(c.srcs && c.srcs.length){
+      h+='<h3>来源</h3><ul style="margin:0;padding-left:20px;font-size:12.5px">';
+      c.srcs.forEach(function(s){
+        h+='<li>'+(s[1]? '<a href="'+esc(s[1])+'" target="_blank" rel="noopener">'+esc(s[0])+'</a>' : esc(s[0]))+'</li>';
+      });
+      h+='</ul>';
+    }
+    if(c.notes) h+='<h3>我的笔记</h3><div class="box">'+esc(c.notes)+'</div>';
+
+    h+='<div class="acts"><button class="pri" id="edit">编辑</button>'+
+       '<button id="copy">复制为 Markdown</button>'+
+       '<button id="del">删除知识卡</button></div></div>';
+    p.innerHTML=h;
+    document.getElementById('edit').onclick=function(){ editing=true; renderCard(); };
+    document.getElementById('del').onclick=function(){ if(confirm('删除这一项的知识卡？')){ delete K[key]; save(); renderTree(); updateProg(); renderCard(); } };
+    document.getElementById('copy').onclick=function(){ copyMd(key,c); };
+  }
+
+  function mdLite(t){
+    return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+  }
+
+  function renderEditor(key,c){
+    c = c || {unit:'',desc:'',ranges:[],targets:[],why:'',how:'',watch:'',cases:[],srcs:[],notes:''};
+    var h='<div style="background:#f6f7f9;border-radius:10px;padding:16px;margin:0 0 10px">';
+    h+='<h3 style="margin-top:0">编辑知识卡</h3>';
+    h+='<div style="margin:0 0 10px"><label style="font-size:12px;color:#5b6470">单位</label>'+
+       '<input type="text" id="f-unit" value="'+esc(c.unit)+'"></div>';
+    h+='<div style="margin:0 0 10px"><label style="font-size:12px;color:#5b6470">定义（一句话说清它是什么）</label>'+
+       '<textarea id="f-desc" rows="2">'+esc(c.desc)+'</textarea></div>';
+
+    h+='<h3>适宜区间与阈值　<span style="font-weight:400;color:#8b95a1">数值 / 含义 / 判读</span></h3><div id="rows-r"></div>'+
+       '<button class="del" style="width:auto;padding:0 10px;height:28px" id="add-r">＋ 加一行</button>';
+
+    h+='<h3>设计目标</h3><div id="rows-t"></div>'+
+       '<button class="del" style="width:auto;padding:0 10px;height:28px" id="add-t">＋ 加一行</button>';
+
+    h+='<div style="margin:12px 0 10px"><label style="font-size:12px;color:#5b6470">为什么重要</label>'+
+       '<textarea id="f-why" rows="3">'+esc(c.why)+'</textarea></div>';
+    h+='<div style="margin:0 0 10px"><label style="font-size:12px;color:#5b6470">怎么用（可用 **加粗**）</label>'+
+       '<textarea id="f-how" rows="4">'+esc(c.how)+'</textarea></div>';
+    h+='<div style="margin:0 0 10px"><label style="font-size:12px;color:#5b6470">注意 / 限制</label>'+
+       '<textarea id="f-watch" rows="2">'+esc(c.watch)+'</textarea></div>';
+    h+='<div style="margin:0 0 10px"><label style="font-size:12px;color:#5b6470">相关案例（每行一个）</label>'+
+       '<textarea id="f-cases" rows="2">'+esc((c.cases||[]).join('\n'))+'</textarea></div>';
+
+    h+='<h3>来源　<span style="font-weight:400;color:#8b95a1">名称 / 网址</span></h3><div id="rows-s"></div>'+
+       '<button class="del" style="width:auto;padding:0 10px;height:28px" id="add-s">＋ 加一行</button>';
+
+    h+='<div style="margin:12px 0 0"><label style="font-size:12px;color:#5b6470">我的笔记</label>'+
+       '<textarea id="f-notes" rows="2">'+esc(c.notes)+'</textarea></div>';
+    h+='</div>';
+    h+='<div class="acts"><button class="pri" id="sv">保存</button><button id="cc">取消</button></div>';
+    return h;
+  }
+
+  function bindEditor(key){
+    var c = K[key] || {ranges:[],targets:[],srcs:[]};
+    function rowRange(r){
+      r=r||['','','info'];
+      return '<div class="row"><input type="text" class="r-v" style="flex:0 0 130px" placeholder="如 22–26 ℃" value="'+esc(r[0])+'">'+
+        '<input type="text" class="r-l" placeholder="含义" value="'+esc(r[1])+'">'+
+        '<select class="r-c" style="flex:0 0 110px">'+
+        ['ok','warn','bad','info'].map(function(v){return '<option value="'+v+'"'+(r[2]===v?' selected':'')+'>'+lvName(v)+'</option>';}).join('')+
+        '</select><button class="del" data-del="r">×</button></div>';
+    }
+    function rowTarget(t){
+      t=t||['',''];
+      return '<div class="row"><input type="text" class="t-n" style="flex:0 0 190px" placeholder="目标项" value="'+esc(t[0])+'">'+
+        '<input type="text" class="t-v" placeholder="数值 / 要求" value="'+esc(t[1])+'">'+
+        '<button class="del" data-del="t">×</button></div>';
+    }
+    function rowSrc(s){
+      s=s||['',''];
+      return '<div class="row"><input type="text" class="s-n" style="flex:0 0 240px" placeholder="来源名称" value="'+esc(s[0])+'">'+
+        '<input type="url" class="s-u" placeholder="https://" value="'+esc(s[1])+'">'+
+        '<button class="del" data-del="s">×</button></div>';
+    }
+    var R=document.getElementById('rows-r'), T=document.getElementById('rows-t'), S=document.getElementById('rows-s');
+    R.innerHTML=(c.ranges||[]).map(rowRange).join('');
+    T.innerHTML=(c.targets||[]).map(rowTarget).join('');
+    S.innerHTML=(c.srcs||[]).map(rowSrc).join('');
+    document.getElementById('add-r').onclick=function(){ R.insertAdjacentHTML('beforeend',rowRange()); };
+    document.getElementById('add-t').onclick=function(){ T.insertAdjacentHTML('beforeend',rowTarget()); };
+    document.getElementById('add-s').onclick=function(){ S.insertAdjacentHTML('beforeend',rowSrc()); };
+    document.addEventListener('click',function(e){
+      var b=e.target.closest('.del[data-del]'); if(!b) return;
+      b.parentNode.parentNode.removeChild(b.parentNode);
+    });
+    document.getElementById('cc').onclick=function(){ editing=false; renderCard(); };
+    document.getElementById('sv').onclick=function(){
+      var o={
+        unit:document.getElementById('f-unit').value.trim(),
+        desc:document.getElementById('f-desc').value.trim(),
+        ranges:[].map.call(R.querySelectorAll('.row'),function(r){
+          return [r.querySelector('.r-v').value.trim(), r.querySelector('.r-l').value.trim(), r.querySelector('.r-c').value]; })
+          .filter(function(x){return x[0]||x[1];}),
+        targets:[].map.call(T.querySelectorAll('.row'),function(r){
+          return [r.querySelector('.t-n').value.trim(), r.querySelector('.t-v').value.trim()]; })
+          .filter(function(x){return x[0]||x[1];}),
+        why:document.getElementById('f-why').value.trim(),
+        how:document.getElementById('f-how').value.trim(),
+        watch:document.getElementById('f-watch').value.trim(),
+        cases:document.getElementById('f-cases').value.split('\n').map(function(s){return s.trim();}).filter(Boolean),
+        srcs:[].map.call(S.querySelectorAll('.row'),function(r){
+          return [r.querySelector('.s-n').value.trim(), r.querySelector('.s-u').value.trim()]; })
+          .filter(function(x){return x[0]||x[1];}),
+        notes:document.getElementById('f-notes').value.trim()
+      };
+      K[key]=o; save(); editing=false; renderTree(); updateProg(); renderCard(); toast('已保存到本机浏览器');
+    };
+  }
+
+  function copyMd(key,c){
+    var L=[];
+    L.push('### '+key+(c.unit?'（'+c.unit+'）':''));
+    if(c.desc) L.push(c.desc);
+    if(c.ranges&&c.ranges.length){ L.push(''); L.push('| 数值 | 含义 | 判读 |'); L.push('|---|---|---|');
+      c.ranges.forEach(function(r){ L.push('| '+r[0]+' | '+r[1]+' | '+lvName(r[2]||'info')+' |'); }); }
+    if(c.targets&&c.targets.length){ L.push(''); L.push('**设计目标**'); L.push('');
+      c.targets.forEach(function(t){ L.push('- '+t[0]+'：'+t[1]); }); }
+    if(c.why){ L.push(''); L.push('**为什么重要**：'+c.why); }
+    if(c.how){ L.push(''); L.push('**怎么用**：'+c.how); }
+    if(c.watch){ L.push(''); L.push('**注意**：'+c.watch); }
+    if(c.cases&&c.cases.length){ L.push(''); L.push('**相关案例**：'+c.cases.join('、')); }
+    if(c.srcs&&c.srcs.length){ L.push(''); L.push('**来源**：'+c.srcs.map(function(s){return s[0]+(s[1]?' '+s[1]:'');}).join('；')); }
+    var txt=L.join('\n');
+    if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(function(){toast('已复制 Markdown');},function(){ fallback(txt); }); }
+    else fallback(txt);
+    function fallback(t){ var a=document.createElement('textarea'); a.value=t; document.body.appendChild(a);
+      a.select(); try{document.execCommand('copy'); toast('已复制 Markdown');}catch(e){ toast('复制失败'); } document.body.removeChild(a); }
+  }
+
+  document.getElementById('tree').addEventListener('click',function(e){
+    var it=e.target.closest('.item');
+    if(it){
+      var gi=+it.getAttribute('data-gi'), key=it.getAttribute('data-key');
+      var g=FACTORS[gi]; var raw=g._items.filter(function(x){return x.key===key;})[0].name;
+      cur={g:g,key:key,raw:raw}; editing=false; renderTree(); renderCard();
+      document.getElementById('panel').scrollTop=0; return;
+    }
+    var gh=e.target.closest('.ghead');
+    if(gh){ gh.parentNode.classList.toggle('open'); }
+  });
+
+  document.getElementById('q').addEventListener('input',renderTree);
+  document.getElementById('only').addEventListener('change',renderTree);
+
+  document.getElementById('exp').onclick=function(){
+    var blob=new Blob([JSON.stringify(K,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='knowledge.json'; a.click(); URL.revokeObjectURL(a.href);
+    toast('已导出 knowledge.json');
+  };
+  document.getElementById('imp').onclick=function(){ document.getElementById('file').click(); };
+  document.getElementById('file').addEventListener('change',function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){
+      try{ var o=JSON.parse(r.result); var n=0;
+        for(var k in o){ K[k]=o[k]; n++; }
+        save(); renderTree(); updateProg(); renderCard(); toast('已导入 '+n+' 张知识卡');
+      }catch(err){ toast('导入失败：不是合法的 JSON'); }
+    };
+    r.readAsText(f,'utf-8'); e.target.value='';
+  });
+  document.getElementById('reset').onclick=function(){
+    if(!confirm('清空本机修改，还原为内置知识卡？导出的 JSON 不受影响。')) return;
+    localStorage.removeItem(LS); K={};
+    for(var k in BASE) K[k]=JSON.parse(JSON.stringify(BASE[k]));
+    renderTree(); updateProg(); renderCard(); toast('已还原为内置版本');
+  };
+
+  renderTree(); updateProg(); renderCard();
+})();
+</script>
+</body>
+</html>

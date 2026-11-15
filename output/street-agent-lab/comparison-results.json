@@ -1,0 +1,317 @@
+{
+  "source": {
+    "source": "2601008_大学路_图层整理版.3dm",
+    "units": "m",
+    "sourceUnits": "mm",
+    "extractDate": "2026-11-15",
+    "axis": "原模型 +X / +Y；未确认地理北向",
+    "length": 160,
+    "carriagewayWidth": 12.413,
+    "counts": {
+      "canopies": 409,
+      "pits": 220,
+      "road": 1,
+      "walk": 7552,
+      "furniture": 306,
+      "spillout": 69,
+      "facilities": 64,
+      "buildings": 23
+    },
+    "proxies": {
+      "canopies": 1117,
+      "pits": 263,
+      "walk": 3,
+      "facilities": 182,
+      "furniture": 509,
+      "spillout": 95
+    },
+    "notes": [
+      "道路和人行道来自顶面网格边界；建筑优先使用拉伸轮廓，Brep 使用平面凸包。",
+      "连续铺装合并，闭合小于0.16m的铺装接缝；保留大于0.1平方米的内部孔洞。",
+      "树冠为实例包围盒投影近似，树干位置取包围盒中心，非实测树干。",
+      "外摆、家具、市政、树池多采用包围盒占地代理；结构、净高、微气候未求解。",
+      "截取原模型 X=2000–2160m、Y=310–370m；所有后续标注使用同一米制坐标。"
+    ]
+  },
+  "assumptions": {
+    "layout": "ladder",
+    "crossCount": 7,
+    "ringCount": 5,
+    "robotCount": 3,
+    "heatRadius": 4,
+    "ringSpeed": 1.2,
+    "robotSpeed": 0.65,
+    "dwell": 8,
+    "cluster": 5,
+    "power": 1800,
+    "efficiency": 0.35,
+    "need": 100,
+    "maxPeople": 8,
+    "inflateTime": 6,
+    "deflateTime": 4,
+    "transferTime": 1,
+    "mode": "market",
+    "temperature": 6,
+    "wind": 2.5,
+    "windAngle": 45,
+    "hold": 8,
+    "socialPull": 0.6,
+    "socialRobotMin": 0.8
+  },
+  "sampling": "2m grid; obstacle excluded; static startup; no queue",
+  "baseline": [
+    {
+      "layout": "sides",
+      "stations": 7,
+      "rings": 5,
+      "length": 308,
+      "coverage": 0.5511247443762781,
+      "roadCoverage": 0.2665505226480836,
+      "p95": 56.66666666666667,
+      "anchors": 4
+    },
+    {
+      "layout": "ladder",
+      "stations": 7,
+      "rings": 5,
+      "length": 294,
+      "coverage": 0.5408997955010225,
+      "roadCoverage": 0.681184668989547,
+      "p95": 19.618966049382724,
+      "anchors": 14
+    },
+    {
+      "layout": "mesh",
+      "stations": 7,
+      "rings": 5,
+      "length": 602.0000000000001,
+      "coverage": 0.911042944785276,
+      "roadCoverage": 0.8797909407665505,
+      "p95": 33.327160493827165,
+      "anchors": 14
+    },
+    {
+      "layout": "serpentine",
+      "stations": 7,
+      "rings": 5,
+      "length": 195.2331938989884,
+      "coverage": 0.3660531697341513,
+      "roadCoverage": 0.43902439024390244,
+      "p95": 19.88236612249444,
+      "anchors": 7
+    }
+  ],
+  "feasible": [
+    {
+      "layout": "mesh",
+      "stations": 5,
+      "rings": 5,
+      "length": 562,
+      "coverage": 0.9028629856850716,
+      "roadCoverage": 0.8658536585365854,
+      "p95": 29.05128205128205,
+      "anchors": 10
+    },
+    {
+      "layout": "mesh",
+      "stations": 5,
+      "rings": 6,
+      "length": 562,
+      "coverage": 0.9028629856850716,
+      "roadCoverage": 0.8658536585365854,
+      "p95": 26.620865384615385,
+      "anchors": 10
+    },
+    {
+      "layout": "mesh",
+      "stations": 5,
+      "rings": 7,
+      "length": 562,
+      "coverage": 0.9028629856850716,
+      "roadCoverage": 0.8658536585365854,
+      "p95": 24.815032051282046,
+      "anchors": 10
+    },
+    {
+      "layout": "mesh",
+      "stations": 5,
+      "rings": 8,
+      "length": 562,
+      "coverage": 0.9028629856850716,
+      "roadCoverage": 0.8658536585365854,
+      "p95": 24.815032051282046,
+      "anchors": 10
+    },
+    {
+      "layout": "mesh",
+      "stations": 7,
+      "rings": 6,
+      "length": 602.0000000000001,
+      "coverage": 0.911042944785276,
+      "roadCoverage": 0.8797909407665505,
+      "p95": 28.520200617283958,
+      "anchors": 14
+    },
+    {
+      "layout": "mesh",
+      "stations": 7,
+      "rings": 7,
+      "length": 602.0000000000001,
+      "coverage": 0.911042944785276,
+      "roadCoverage": 0.8797909407665505,
+      "p95": 24.461280864197533,
+      "anchors": 14
+    },
+    {
+      "layout": "mesh",
+      "stations": 7,
+      "rings": 8,
+      "length": 602.0000000000001,
+      "coverage": 0.911042944785276,
+      "roadCoverage": 0.8797909407665505,
+      "p95": 24.461280864197533,
+      "anchors": 14
+    },
+    {
+      "layout": "mesh",
+      "stations": 9,
+      "rings": 5,
+      "length": 642,
+      "coverage": 0.9192229038854806,
+      "roadCoverage": 0.8937282229965157,
+      "p95": 29.708333333333336,
+      "anchors": 18
+    },
+    {
+      "layout": "mesh",
+      "stations": 9,
+      "rings": 6,
+      "length": 642,
+      "coverage": 0.9192229038854806,
+      "roadCoverage": 0.8937282229965157,
+      "p95": 25.611250000000002,
+      "anchors": 18
+    },
+    {
+      "layout": "mesh",
+      "stations": 9,
+      "rings": 7,
+      "length": 642,
+      "coverage": 0.9192229038854806,
+      "roadCoverage": 0.8937282229965157,
+      "p95": 22.666666666666668,
+      "anchors": 18
+    }
+  ],
+  "simulation": {
+    "seed": 17,
+    "seconds": 360,
+    "peakHeat": 7,
+    "peakRobots": 2,
+    "final": {
+      "heated": 4,
+      "waiting": 7,
+      "energy": 221.66033333332834,
+      "active": 2,
+      "robotsServing": 0
+    },
+    "lastEvents": [
+      {
+        "time": 358.5999999999882,
+        "text": "H04 最近派单 · 预计 1s · 2人 · S̄ 0.78"
+      },
+      {
+        "time": 357.39999999998827,
+        "text": "P1 与 P14 偶遇 · S̄ 0.28 · 临时停留"
+      },
+      {
+        "time": 348.99999999998875,
+        "text": "R02 社交加权最近可达 · 预留8m → 停留点 · 3人 · S̄ 0.74"
+      },
+      {
+        "time": 348.99999999998875,
+        "text": "H04 最近派单 · 预计 0s · 1人 · S̄ 0.75"
+      },
+      {
+        "time": 347.19999999998885,
+        "text": "P4 与 P6 偶遇 · S̄ 0.35 · 临时停留"
+      },
+      {
+        "time": 345.9999999999889,
+        "text": "P11 与 P16 偶遇 · S̄ 0.44 · 临时停留"
+      },
+      {
+        "time": 345.7999999999889,
+        "text": "R01 需求已散去，释放服务区"
+      },
+      {
+        "time": 344.199999999989,
+        "text": "H01 最近派单 · 预计 0s · 2人 · S̄ 0.58"
+      },
+      {
+        "time": 342.7999999999891,
+        "text": "P7 与 P13 偶遇 · S̄ 0.78 · 临时停留"
+      },
+      {
+        "time": 336.9999999999894,
+        "text": "P3 与 P12 偶遇 · S̄ 0.58 · 临时停留"
+      },
+      {
+        "time": 329.79999999998984,
+        "text": "R01 社交加权最近可达 · 预留8m → 停留点 · 1人 · S̄ 0.84"
+      },
+      {
+        "time": 329.79999999998984,
+        "text": "H03 最近派单 · 预计 32s · 1人 · S̄ 0.84"
+      },
+      {
+        "time": 320.99999999999034,
+        "text": "P1 与 P15 偶遇 · S̄ 0.61 · 临时停留"
+      },
+      {
+        "time": 318.5999999999905,
+        "text": "H05 最近派单 · 预计 30s · 2人 · S̄ 0.24"
+      },
+      {
+        "time": 318.5999999999905,
+        "text": "H04 最近派单 · 预计 0s · 1人 · S̄ 0.75"
+      },
+      {
+        "time": 316.99999999999056,
+        "text": "R03 需求已散去，释放服务区"
+      },
+      {
+        "time": 310.5999999999909,
+        "text": "H01 最近派单 · 预计 19s · 2人 · S̄ 0.58"
+      },
+      {
+        "time": 308.999999999991,
+        "text": "R02 需求已散去，释放服务区"
+      },
+      {
+        "time": 308.999999999991,
+        "text": "H03 最近派单 · 预计 31s · 1人 · S̄ 0.33"
+      },
+      {
+        "time": 303.39999999999134,
+        "text": "P3 与 P12 偶遇 · S̄ 0.58 · 临时停留"
+      },
+      {
+        "time": 302.3999999999914,
+        "text": "P2 与 P5 偶遇 · S̄ 0.24 · 临时停留"
+      },
+      {
+        "time": 297.79999999999166,
+        "text": "H05 最近派单 · 预计 11s · 2人 · S̄ 0.36"
+      },
+      {
+        "time": 292.9999999999919,
+        "text": "R03 社交加权最近可达 · 预留8m → 停留点 · 3人 · S̄ 0.91"
+      },
+      {
+        "time": 292.9999999999919,
+        "text": "H02 最近派单 · 预计 10s · 3人 · S̄ 0.91"
+      }
+    ]
+  }
+}

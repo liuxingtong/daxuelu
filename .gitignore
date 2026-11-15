@@ -1,0 +1,16 @@
+.DS_Store
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+
+# Large / binary source material, kept local
+*.3dm
+output/imagegen/
+
+# Generated or bulky local artifacts
+/output/street-agent-lab/index.html
+/output/street-agent-lab/index-embed.html
+/output/street-agent-lab/screenshots/
+/output/street-agent-lab/*.zip
+/output/street-agent-lab/大学路-智能体技术平面.png
