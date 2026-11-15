@@ -4,7 +4,7 @@
 
 **在线页面：** https://liuxingtong.github.io/daxuelu/
 
-> 如果仓库是 private，GitHub Pages 需要 GitHub Pro/团队计划；免费账号请把仓库设为 public，或改用其他静态托管。
+> GitHub Pages 使用 **Deploy from a branch**（`main` / `/root`），不消耗 Actions 分钟；仓库必须是 **public**（private 仓库的 Pages 需要付费计划）。
 
 ![交互页面预览](docs/preview.png)
 
@@ -15,7 +15,17 @@
 | `index.html` | 部署到 GitHub Pages 的紧凑网页版 |
 | `output/street-agent-lab/` | 完整源码、测试、设计说明 |
 | `街道智能体_四维筛选_合并版_v2026.10.08/` | 前期案例筛选参考页 |
-| `.github/workflows/pages.yml` | GitHub Pages 自动部署 |
+| `.nojekyll` | 关闭 Jekyll，直接发布静态文件 |
+
+
+## 部署（GitHub Pages）
+
+1. 仓库 **Settings → General → Change repository visibility → Public**（private 仓库的 Pages 需要付费计划）。
+2. **Settings → Pages → Build and deployment → Source: Deploy from a branch**。
+3. Branch 选 `main`，目录选 `/ (root)`，Save。
+4. 等待 1–2 分钟，访问 https://liuxingtong.github.io/daxuelu/ 。
+
+不依赖 GitHub Actions，因此不会消耗 Actions 分钟，也不会受 Actions 账单限制。
 
 ## 本地运行与重建
 
